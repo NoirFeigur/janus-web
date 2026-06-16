@@ -196,6 +196,37 @@ features/<m>/api/*.queries.ts ← queryOptions + key 工厂
 - 副作用回调用终态简写：`onClick={() => void save()}`、`onState={st => void setState(st)}`。
 - **不用 barrel 文件**（`index.ts` 全量 re-export）——伤 Vite tree-shaking，按需直接 import。
 
+### 模块边界（ESLint 强制）
+
+feature-based 布局只有在**边界被工具强制**时才不退化成大泥球。用 ESLint [`import/no-restricted-paths`](https://github.com/import-js/eslint-plugin-import/blob/main/docs/rules/no-restricted-paths.md) 把分层与隔离做成 CI 门禁，而非口头约定：
+
+- **feature 之间不互相 import**：`features/users` 不得直接 import `features/usage`。跨 feature 复用一律下沉到 `components/` / `hooks/` / `utils/`。需要组合多个 feature 时在 `pages/` 编排。
+- **依赖只向下**：`features → (api / stores / lib / components / utils)`，下层绝不反向 import `features`（`utils` import `features` 即报错）。
+- **`pages` 可 import `features`，`features` 不得 import `pages`**：页面是编排层，处于依赖链顶端。
+- **`api/generated/` 是叶子**：禁止它 import 项目内任何其他目录（codegen 产物只被依赖、不依赖业务）。
+
+```javascript
+// eslint.config.js（flat config）—— import/no-restricted-paths zones
+{
+  target: './src/features/*/**',
+  from:   './src/features',
+  except: ['./*/**'],            // 仅禁跨 feature；允许 import 本 feature 内部
+  message: 'feature 之间禁止直接 import；复用请下沉到 components/hooks/utils。',
+},
+{
+  target: ['./src/api', './src/stores', './src/lib', './src/components', './src/utils', './src/hooks'],
+  from:   './src/features',
+  message: '下层不得反向依赖 features。',
+},
+{
+  target: './src/features',
+  from:   './src/pages',
+  message: 'features 不得 import pages（页面是顶层编排层）。',
+},
+```
+
+> 配合路径别名：跨层 import 一律走 `@features/* @api/* @stores/* @lib/*`，eslint zones 按这些根目录划线，违例在 `pnpm lint` 直接红。
+
 ---
 
 ## 单元 / 组件测试规范
