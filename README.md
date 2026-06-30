@@ -23,6 +23,7 @@
 | 框架 | **React 19 + TypeScript** | — |
 | 构建 | **Vite 7** | 比 AntD Pro 默认的 UmiJS 更轻；二选一取 Vite |
 | UI 组件 | **Ant Design 5 + Ant Design Pro** | `ProTable`（分页/筛选/排序/批量/导出）、`ProForm`（联动/校验/分步）、`ProLayout`（权限菜单布局） |
+| 样式 | **Tailwind CSS 4** | 统一样式方案：布局/间距/一次性微调走工具类，**取代散落的内联 `style={{}}`**；AntD 组件主题仍走 token。见「样式规范」 |
 | 客户端状态 | **Zustand** | UI 态（主题/侧栏/弹窗开关等） |
 | **服务端状态** | **TanStack Query（React Query）** | 表格数据/缓存/失效重取，套在 Axios 上 |
 | HTTP | **Axios** | 统一请求层（拦截器挂 token / 错误码处理） |
@@ -189,6 +190,30 @@ features/<m>/api/*.queries.ts ← queryOptions + key 工厂
   - **业务错误**：后端发 RFC 9457 `problem+json` 的 `code` + 结构化 `params`，前端按 `code` 查 `locales/*/error.ts` 文案、用 `params` 插值（如 `已用 {used}/{limit}，{period} 配额耗尽`）。
   - **菜单/按钮/字段 label**：前端 i18n 静态资源，按 `menu.system.user` 两层命名空间组织 key。
 
+### 样式规范（Tailwind CSS 4）
+
+样式统一用 **Tailwind CSS 4**（CSS-first 配置，无 `tailwind.config.js`，靠 `@tailwindcss/vite` 插件 + CSS 内 `@theme`）。
+
+**与 AntD 的分工（别打架）**：
+
+- **AntD 组件外观走 token**：颜色/圆角/组件级样式改 `ConfigProvider` theme（`src/styles/theme.ts`），**不要**用 Tailwind 去覆盖 AntD 组件内部类名。
+- **Tailwind 管「组件之间」**：布局（flex/grid）、间距、对齐、尺寸、一次性微调——**取代内联 `style={{}}`**。原来 `style={{ marginTop: 16 }}` 一律改 `className="mt-4"`。
+- **裸 hex 收口**：品牌色映射进 `@theme`（`--color-laplace` 等），用 `bg-laplace` / `text-laplace`，不在 JSX 里写 `#192E76`。
+
+**AntD 5 + Tailwind 4 共存（关键，否则 AntD 组件样式被打乱）**：
+
+1. `@layer` 声明顺序把 antd 压在 utilities 之前——Tailwind 工具类天然能覆盖 antd，且 preflight 不会重置 antd 组件：
+
+   ```css
+   /* src/styles/global.css */
+   @layer theme, base, antd, components, utilities;
+   @import 'tailwindcss';
+   ```
+
+2. 用 `<StyleProvider layer>`（`@ant-design/cssinjs`）把 antd 的 CSS-in-JS 产物落进 `antd` 层（已在 `app/providers.tsx` 装配）。
+
+> 详见 [AntD 兼容 Tailwind v4 官方文档](https://ant.design/docs/react/compatible-style-cn)。
+
 ### 代码风格
 
 - ESLint + Prettier；提交前 `pnpm lint` + `pnpm type-check` 必须干净。
@@ -327,7 +352,7 @@ pnpm test
 
 > 开发期跨域：在 `vite.config.ts` 配 `server.proxy` 把 `/api` 代理到 `janus-server`（默认 `http://localhost:8000`）。
 >
-> 后端类型同步：`pnpm codegen` 从 `janus-server` 的 OpenAPI（`http://localhost:8000/openapi.json`）生成 `src/api/generated/`。
+> 后端契约同步：`pnpm codegen` 一次跑两步——`codegen:enums`（读 `janus-server` 的 `src/locales/{lang}/enums.json` 重生枚举 label 单源 `src/locales/{lang}/enum.ts`）+ `codegen:api`（从后端 `app.openapi()` **离线导出** schema 再经 `openapi-typescript` 生成 `src/api/generated/types.ts`）。离线导出与 live 服务 `/openapi.json` 逐字节一致，且不需起服务/连 DB/Redis，对 CI 友好。两步均默认读同级 `../janus-server`，可用 `JANUS_SERVER_DIR` 覆盖。
 
 ---
 

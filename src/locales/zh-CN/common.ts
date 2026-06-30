@@ -1,0 +1,33 @@
+/** 通用文案（按钮/占位/反馈）。键以 common. 命名空间组织。 */
+const common: Record<string, string> = {
+  'common.appName': 'Janus 管理后台',
+  'common.save': '保存',
+  'common.cancel': '取消',
+  'common.delete': '删除',
+  'common.edit': '编辑',
+  'common.create': '新建',
+  'common.confirm': '确认',
+  'common.search': '查询',
+  'common.reset': '重置',
+  'common.refresh': '刷新',
+  'common.export': '导出',
+  'common.detail': '详情',
+  'common.actions': '操作',
+  'common.status': '状态',
+  'common.enabled': '启用',
+  'common.disabled': '禁用',
+  'common.empty': '暂无数据',
+  'common.loading': '加载中…',
+  'common.success': '操作成功',
+  'common.fail': '操作失败',
+  'common.logout': '退出登录',
+  'common.login': '登录',
+  'common.username': '用户名',
+  'common.password': '密码',
+  'common.createdAt': '创建时间',
+  'common.comingSoon': '即将上线',
+  'common.notFound': '页面不存在',
+  'common.backHome': '返回首页',
+};
+
+export default common;

@@ -1,0 +1,21 @@
+/**
+ * 全局样式入口 —— Tailwind CSS 4（CSS-first，无 tailwind.config.js）。
+ *
+ * @layer 声明顺序把 antd 压在 utilities 之前：Tailwind 工具类天然能覆盖 antd，
+ * 且 Tailwind 的 preflight（base 层）不会重置 antd 组件样式。
+ * 配合 app/providers.tsx 里的 <StyleProvider layer>，antd 的 CSS-in-JS 产物落进 antd 层。
+ * 详见 https://ant.design/docs/react/compatible-style-cn
+ */
+@layer theme, base, antd, components, utilities;
+
+@import 'tailwindcss';
+
+/* 品牌色映射进 Tailwind 主题 —— 用 bg-laplace / text-laplace，JSX 里不写裸 hex。 */
+@theme {
+  --color-laplace: #192e76;
+  --color-laplace-sider: #142b70;
+  --color-success: #67c23a;
+  --color-warning: #e6a23c;
+  --color-error: #f56c6c;
+  --color-page: #f5f6fa;
+}
