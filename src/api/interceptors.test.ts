@@ -105,4 +105,58 @@ describe('api interceptors', () => {
     await apiClient.get('/admin/secure').catch(() => undefined);
     expect(useAuthStore.getState().accessToken).toBeNull();
   });
+
+  it('401 且有 refresh token：静默刷新后重放原请求，会话换发新 token', async () => {
+    useAuthStore.setState({ accessToken: 'stale-token', refreshToken: 'r1' });
+    let secureCalls = 0;
+    server.use(
+      http.get('*/admin/secure', () => {
+        secureCalls += 1;
+        // 首次（旧 token）401；刷新后重放（新 token）放行。
+        if (secureCalls === 1) {
+          return HttpResponse.json(
+            { success: false, code: 'auth.invalid_token', params: {}, trace_id: 't' },
+            { status: 401 },
+          );
+        }
+        return HttpResponse.json({ success: true, data: { ok: true }, trace_id: 't' });
+      }),
+      http.post('*/auth/refresh', () =>
+        HttpResponse.json({
+          success: true,
+          data: { access_token: 'new-token', token_type: 'Bearer', expires_in: 900, refresh_token: 'r2' },
+          trace_id: 't',
+        }),
+      ),
+    );
+
+    const res = await apiClient.get<{ ok: boolean }>('/admin/secure');
+    expect(res.data).toEqual({ ok: true });
+    expect(secureCalls).toBe(2); // 原请求被重放一次。
+    // 会话被换发为刷新返回的新 token 对。
+    expect(useAuthStore.getState().accessToken).toBe('new-token');
+    expect(useAuthStore.getState().refreshToken).toBe('r2');
+  });
+
+  it('401 但 refresh 也失败：清会话（不无限重试）', async () => {
+    window.history.pushState({}, '', '/login');
+    useAuthStore.setState({ accessToken: 'stale-token', refreshToken: 'r-bad' });
+    server.use(
+      http.get('*/admin/secure', () =>
+        HttpResponse.json(
+          { success: false, code: 'auth.invalid_token', params: {}, trace_id: 't' },
+          { status: 401 },
+        ),
+      ),
+      http.post('*/auth/refresh', () =>
+        HttpResponse.json(
+          { success: false, code: 'auth.refresh_invalid', params: {}, trace_id: 't' },
+          { status: 401 },
+        ),
+      ),
+    );
+    await apiClient.get('/admin/secure').catch(() => undefined);
+    expect(useAuthStore.getState().accessToken).toBeNull();
+    expect(useAuthStore.getState().refreshToken).toBeNull();
+  });
 });

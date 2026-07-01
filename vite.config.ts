@@ -21,9 +21,12 @@ export default defineConfig({
     port: 5173,
     proxy: {
       // 开发期把 /api 代理到 janus-server，规避跨域。
+      // 后端路由挂在根路径（api_prefix=""），故转发前剥掉 /api 前缀
+      // （/api 仅是前端侧命名空间；生产由反向代理做同样的 rewrite）。
       '/api': {
         target: 'http://localhost:8000',
         changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, ''),
       },
     },
   },

@@ -11,6 +11,8 @@ export interface CurrentUser {
   id: string;
   username: string;
   realName: string | null;
+  /** 持有 superadmin 角色（后端 is_superuser）→ 跳过全部权限码校验（后端 auth §）。 */
+  isSuperuser: boolean;
 }
 
 interface AuthState {
@@ -20,6 +22,7 @@ interface AuthState {
   /** RuoYi 风格权限码集合，如 'system:user:list'（设计规范 §4.3）。 */
   permissions: string[];
   isAuthenticated: () => boolean;
+  /** 超管旁路：is_superuser 直接放行，否则查权限码集合。 */
   hasPermission: (code: string) => boolean;
   setSession: (args: {
     accessToken: string;
@@ -27,6 +30,8 @@ interface AuthState {
     user: CurrentUser;
     permissions: string[];
   }) => void;
+  /** 仅换发 token（refresh 轮换用），不动 user/permissions。 */
+  setTokens: (args: { accessToken: string; refreshToken: string }) => void;
   setAccessToken: (accessToken: string) => void;
   clear: () => void;
 }
@@ -39,9 +44,13 @@ export const useAuthStore = create<AuthState>()(
       user: null,
       permissions: [],
       isAuthenticated: () => get().accessToken !== null,
-      hasPermission: (code) => get().permissions.includes(code),
+      hasPermission: (code) => {
+        const state = get();
+        return state.user?.isSuperuser === true || state.permissions.includes(code);
+      },
       setSession: ({ accessToken, refreshToken, user, permissions }) =>
         set({ accessToken, refreshToken, user, permissions }),
+      setTokens: ({ accessToken, refreshToken }) => set({ accessToken, refreshToken }),
       setAccessToken: (accessToken) => set({ accessToken }),
       clear: () => set({ accessToken: null, refreshToken: null, user: null, permissions: [] }),
     }),

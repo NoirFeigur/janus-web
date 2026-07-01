@@ -1,5 +1,6 @@
 /** 顶栏右侧内容 —— 用户菜单 + 语言切换（设计规范 §3.1）。 */
 import { LogoutOutlined, TranslationOutlined } from '@ant-design/icons';
+import { useLogoutMutation } from '@features/auth/api/auth.queries';
 import { type AppLocale } from '@lib/i18n';
 import { useAuthStore } from '@stores/auth.store';
 import { useLocaleStore } from '@stores/locale.store';
@@ -13,12 +14,16 @@ export function RightContent() {
   const intl = useIntl();
   const navigate = useNavigate();
   const user = useAuthStore((s) => s.user);
-  const clear = useAuthStore((s) => s.clear);
   const setLocale = useLocaleStore((s) => s.setLocale);
+  const logoutMutation = useLogoutMutation();
 
   const onLogout = () => {
-    clear();
-    void navigate(paths.login);
+    // 先请求后端撤销会话（best-effort），无论成败都清本地态后回登录页。
+    logoutMutation.mutate(undefined, {
+      onSettled: () => {
+        void navigate(paths.login, { replace: true });
+      },
+    });
   };
 
   return (

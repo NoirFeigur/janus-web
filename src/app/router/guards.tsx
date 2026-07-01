@@ -16,7 +16,8 @@ export function AuthGuard({ children }: { children: ReactNode }) {
 }
 
 export function PermissionGuard({ perm, children }: { perm: string; children: ReactNode }) {
-  const hasPermission = useAuthStore((s) => s.permissions.includes(perm));
+  // 超管旁路：is_superuser 直接放行；否则查权限码集合（与 auth.store.hasPermission 同源）。
+  const hasPermission = useAuthStore((s) => s.user?.isSuperuser === true || s.permissions.includes(perm));
   if (!hasPermission) {
     return <Navigate to={paths.notFound} replace />;
   }
