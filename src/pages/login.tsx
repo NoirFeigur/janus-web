@@ -6,15 +6,15 @@
  * 移动端：左栏隐藏，顶部落一枚紧凑品牌标，单列表单。
  *
  * 登录逻辑走 useLoginMutation（login→getMe→setSession 复合流）；成功后按 AuthGuard
- * 带来的 from 回跳，无则去 dashboard。错误由拦截器统一按 code toast，不在此重复弹。
+ * 带来的 from 回跳，无则去固定首页 '/'。错误由拦截器统一按 code toast，不在此重复弹。
  */
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { useLoginMutation } from '@features/auth/api/auth.queries';
 import { Button, Checkbox, Form, Input } from 'antd';
-import { useIntl } from 'react-intl';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { paths } from '@/app/router/paths';
+import { useT } from '@/hooks/useT';
 
 interface LoginValues {
   username: string;
@@ -69,12 +69,11 @@ function PortalMotif() {
 }
 
 export default function LoginPage() {
-  const intl = useIntl();
   const navigate = useNavigate();
   const location = useLocation();
   const loginMutation = useLoginMutation();
 
-  const t = (id: string) => intl.formatMessage({ id });
+  const t = useT();
 
   const onFinish = (values: LoginValues) => {
     loginMutation.mutate(
@@ -82,7 +81,7 @@ export default function LoginPage() {
       {
         onSuccess: () => {
           const from = (location.state as FromState | null)?.from;
-          void navigate(from ?? paths.dashboard, { replace: true });
+          void navigate(from ?? paths.home, { replace: true });
         },
       },
     );

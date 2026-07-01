@@ -1,32 +1,37 @@
 /** 主框架布局 —— ProLayout（侧栏 + 顶栏 + 内容区，设计规范 §3.1）。 */
-import {
-  ApiOutlined,
-  AppstoreOutlined,
-  BarChartOutlined,
-  DashboardOutlined,
-  DeploymentUnitOutlined,
-  KeyOutlined,
-  TeamOutlined,
-} from '@ant-design/icons';
-import { ProLayout } from '@ant-design/pro-components';
+import { HomeOutlined } from '@ant-design/icons';
+import { ProLayout, type MenuDataItem } from '@ant-design/pro-components';
+import { currentMenusOptions } from '@features/menu/api/menu.queries';
+import { buildMenuTree } from '@features/menu/utils/buildMenuTree';
+import { menuTreeToProRoutes } from '@features/menu/utils/menuTreeToProRoutes';
 import { useUiStore } from '@stores/ui.store';
-import { useIntl } from 'react-intl';
+import { useQuery } from '@tanstack/react-query';
+import { useMemo } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 
-import { paths } from './router/paths';
-
+import { paths } from '@/app/router/paths';
 import { RightContent } from '@/components/RightContent';
-
-
+import { useT } from '@/hooks/useT';
 
 export function AppLayout() {
-  const intl = useIntl();
   const navigate = useNavigate();
   const location = useLocation();
   const siderCollapsed = useUiStore((s) => s.siderCollapsed);
   const setSiderCollapsed = useUiStore((s) => s.setSiderCollapsed);
+  const t = useT();
 
-  const t = (id: string) => intl.formatMessage({ id });
+  // 服务端驱动菜单：拉当前用户可见菜单 → 建树 → 映射为 ProLayout route。
+  // 首页是固定入口、非动态菜单，恒置于侧栏顶部；概览等功能页来自动态菜单。
+  const { data: menus } = useQuery(currentMenusOptions());
+  const proRoutes = useMemo<MenuDataItem[]>(() => {
+    const home: MenuDataItem = {
+      path: paths.home,
+      name: t('menu.home'),
+      icon: <HomeOutlined />,
+    };
+    const dynamic = menus ? menuTreeToProRoutes(buildMenuTree(menus), t) : [];
+    return [home, ...dynamic];
+  }, [menus, t]);
 
   return (
     <ProLayout
@@ -37,18 +42,7 @@ export function AppLayout() {
       collapsed={siderCollapsed}
       onCollapse={setSiderCollapsed}
       location={{ pathname: location.pathname }}
-      route={{
-        path: '/',
-        routes: [
-          { path: paths.dashboard, name: t('menu.dashboard'), icon: <DashboardOutlined /> },
-          { path: paths.users, name: t('menu.users'), icon: <TeamOutlined /> },
-          { path: paths.credentials, name: t('menu.credentials'), icon: <KeyOutlined /> },
-          { path: paths.catalog, name: t('menu.catalog'), icon: <AppstoreOutlined /> },
-          { path: paths.grants, name: t('menu.grants'), icon: <DeploymentUnitOutlined /> },
-          { path: paths.usage, name: t('menu.usage'), icon: <BarChartOutlined /> },
-          { path: paths.quota, name: t('menu.quota'), icon: <ApiOutlined /> },
-        ],
-      }}
+      route={{ path: '/', routes: proRoutes }}
       menuItemRender={(item, dom) => (
         <a
           onClick={() => {

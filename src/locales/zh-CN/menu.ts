@@ -1,5 +1,6 @@
 /** 菜单文案。键以 menu. 两层命名空间组织（对齐后端 RuoYi 菜单）。 */
 const menu: Record<string, string> = {
+  'menu.home': '首页',
   'menu.dashboard': '概览',
   'menu.users': '用户管理',
   'menu.credentials': 'API Key',

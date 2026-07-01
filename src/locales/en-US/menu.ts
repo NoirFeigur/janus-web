@@ -1,4 +1,5 @@
 const menu: Record<string, string> = {
+  'menu.home': 'Home',
   'menu.dashboard': 'Dashboard',
   'menu.users': 'Users',
   'menu.credentials': 'API Keys',

@@ -13,7 +13,7 @@ export default function NotFoundPage() {
       title="404"
       subTitle={t('common.notFound')}
       extra={
-        <Button type="primary" onClick={() => void navigate(paths.dashboard)}>
+        <Button type="primary" onClick={() => void navigate(paths.home)}>
           {t('common.backHome')}
         </Button>
       }
