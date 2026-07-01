@@ -5,13 +5,13 @@ import { type AppLocale } from '@lib/i18n';
 import { useAuthStore } from '@stores/auth.store';
 import { useLocaleStore } from '@stores/locale.store';
 import { Dropdown, Space } from 'antd';
-import { useIntl } from 'react-intl';
 import { useNavigate } from 'react-router-dom';
 
 import { paths } from '@/app/router/paths';
+import { useT } from '@/hooks/useT';
 
 export function RightContent() {
-  const intl = useIntl();
+  const t = useT();
   const navigate = useNavigate();
   const user = useAuthStore((s) => s.user);
   const setLocale = useLocaleStore((s) => s.setLocale);
@@ -45,7 +45,7 @@ export function RightContent() {
             {
               key: 'logout',
               icon: <LogoutOutlined />,
-              label: intl.formatMessage({ id: 'common.logout' }),
+              label: t('common.logout'),
               onClick: onLogout,
             },
           ],

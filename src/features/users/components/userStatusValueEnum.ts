@@ -8,22 +8,17 @@
  */
 import type { ProSchemaValueEnumMap } from '@ant-design/pro-components';
 import { useMemo } from 'react';
-import { useIntl } from 'react-intl';
+
+import { useT } from '@/hooks/useT';
 
 export function useUserStatusValueEnum(): ProSchemaValueEnumMap {
-  const intl = useIntl();
+  const t = useT();
   return useMemo(
     () =>
       new Map([
-        [
-          'active',
-          { text: intl.formatMessage({ id: 'enum.userStatus.active' }), status: 'Success' },
-        ],
-        [
-          'disabled',
-          { text: intl.formatMessage({ id: 'enum.userStatus.disabled' }), status: 'Error' },
-        ],
+        ['active', { text: t('enum.userStatus.active'), status: 'Success' }],
+        ['disabled', { text: t('enum.userStatus.disabled'), status: 'Error' }],
       ]),
-    [intl],
+    [t],
   );
 }
