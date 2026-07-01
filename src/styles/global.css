@@ -14,8 +14,9 @@
 @import 'tailwindcss';
 
 /*
- * 全高链 —— 让 #root 及其下的 min-h-screen/h-full 有可依据的祖先高度。
- * 归入 base 层：仅托底，绝不与 antd 组件或 utilities 争权。
+ * 全高链 + 正文字号 —— 归入 base 层：仅托底，绝不与 antd 组件或 utilities 争权。
+ * height: 让 #root 及其下的 min-h-screen/h-full 有可依据的祖先高度（preflight 不设 height）。
+ * font-size: 让裸文字（非 AntD 组件）收敛到规范正文 14px；var 与 AntD fontSize token 同源。
  */
 @layer base {
   html,
@@ -23,30 +24,29 @@
   #root {
     height: 100%;
   }
+  body {
+    font-size: var(--brand-font-base);
+  }
 }
 
 /*
- * Tailwind 4 @theme —— 只声明 JSX 里真正用作工具类的 token。
+ * Tailwind 4 @theme inline —— 只声明 JSX 里真正用作工具类的 token（bg-* / text-*）。
  *
- * 颜色/圆角/组件级样式的「真值」统一归 AntD 主题（src/styles/theme.ts）；
- * 这里不再镜像整套配色，只保留 Tailwind class（bg-* / text-*）实际依赖的那一小撮，
- * 避免同一批值在 CSS 与 TS 两处重复维护。
+ * inline：Tailwind 生成的 utility 直接内联 var(--brand-*) 引用，且不再向 :root 输出
+ * 一份 --color-* 中间变量。品牌色「真值」的唯一来源是 src/styles/theme.ts，
+ * 运行时由 main.tsx 注入 :root { --brand-* }（见该文件）。此处零字面量、零重复。
  */
-@theme {
-  /* 品牌色 —— 仅 JSX 用作 bg-* / text-* 的颜色（white 用 Tailwind 内置）。 */
-  --color-page: #f5f6fa;
-  --color-laplace: #192e76;
-  --color-laplace-sider: #142b70;
-  --color-laplace-deep: #0f1f52;
-  --color-header-bg: #ffffff;
-  --color-card-bg: #ffffff;
-  --color-text-primary: rgba(0, 0, 0, 0.88);
-  --color-text-secondary: rgba(0, 0, 0, 0.45);
-  --color-table-row-hover: #f5f6fa;
-  --color-table-row-selected: rgba(25, 46, 118, 0.08);
-
-  /* 字号 —— 把 Tailwind 默认 text-base(16px) 收敛到规范正文 14px。 */
-  --text-base: 14px;
+@theme inline {
+  --color-page: var(--brand-page);
+  --color-primary: var(--brand-primary);
+  --color-nav: var(--brand-nav);
+  --color-nav-deep: var(--brand-nav-deep);
+  --color-header-bg: var(--brand-header-bg);
+  --color-card-bg: var(--brand-card-bg);
+  --color-text-primary: var(--brand-text-primary);
+  --color-text-secondary: var(--brand-text-secondary);
+  --color-table-row-hover: var(--brand-table-row-hover);
+  --color-table-row-selected: var(--brand-table-row-selected);
 }
 
 /* 登录页动效 —— 表单入场（增强已可见的默认态，非隐藏后再显）+ 门户环缓旋。 */
@@ -88,7 +88,7 @@
 @layer components {
   .janus-sider,
   .janus-mobile-drawer .ant-drawer-body {
-    background: linear-gradient(180deg, var(--color-laplace-sider) 0%, var(--color-laplace-deep) 100%);
+    background: linear-gradient(180deg, var(--brand-nav) 0%, var(--brand-nav-deep) 100%);
   }
 
   .janus-sider .ant-layout-sider-children,
@@ -100,7 +100,7 @@
   .janus-mobile-drawer .ant-drawer-content,
   .janus-mobile-drawer .ant-drawer-body {
     padding: 0;
-    background: var(--color-laplace-deep);
+    background: var(--brand-nav-deep);
   }
 
   .janus-sider-logo {
@@ -145,7 +145,7 @@
   }
 
   .janus-page .ant-page-header-heading-title {
-    color: var(--color-text-primary);
+    color: var(--brand-text-primary);
     font-size: 16px;
     font-weight: 600;
   }

@@ -1,7 +1,7 @@
 /**
  * 登录页 —— 分栏品牌页（当前仅密码登录；企微扫码登录后端暂未支持，见设计规范 §11.1）。
  *
- * 左栏：Laplace navy 品牌面，Janus「网关」门户motif（呼应罗马门神 Janus = 通道/门户）。
+ * 左栏：深蓝品牌面，Janus「网关」门户motif（呼应罗马门神 Janus = 通道/门户）。
  * 右栏：洁净表单，标准 AntD 表单原语（可信、熟悉，不发明控件）。
  * 移动端：左栏隐藏，顶部落一枚紧凑品牌标，单列表单。
  *
@@ -90,7 +90,7 @@ export default function LoginPage() {
   return (
     <div className="grid min-h-[100dvh] bg-white lg:grid-cols-2">
       {/* —— 左：品牌面（lg+ 显示） —— */}
-      <aside className="relative hidden overflow-hidden bg-laplace-deep lg:flex lg:flex-col lg:justify-between lg:p-12">
+      <aside className="relative hidden overflow-hidden bg-nav-deep lg:flex lg:flex-col lg:justify-between lg:p-12">
         <div className="relative z-10 flex items-center gap-3 text-white">
           <span className="grid h-9 w-9 place-items-center rounded-md bg-white/10 text-lg font-semibold">
             J
@@ -120,10 +120,10 @@ export default function LoginPage() {
         <div className="janus-rise w-full max-w-sm rounded-md bg-card-bg p-6 shadow-sm sm:p-8 lg:p-0 lg:shadow-none">
           {/* 移动端紧凑品牌标（lg 隐藏，左栏已承担品牌）。 */}
           <div className="mb-10 flex items-center gap-2.5 lg:hidden">
-            <span className="grid h-9 w-9 place-items-center rounded-md bg-laplace text-lg font-semibold text-white">
+            <span className="grid h-9 w-9 place-items-center rounded-md bg-primary text-lg font-semibold text-white">
               J
             </span>
-            <span className="text-lg font-semibold tracking-tight text-laplace">
+            <span className="text-lg font-semibold tracking-tight text-primary">
               {t('common.appName')}
             </span>
           </div>

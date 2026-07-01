@@ -43,7 +43,7 @@ export function Navbar({ siderCollapsed, isMobile, onNavigationToggle, menuTree,
             type="text"
             icon={navigationIcon}
             aria-label={navigationLabel}
-            className="h-9 w-9 rounded-md text-text-primary hover:bg-table-row-selected hover:text-laplace"
+            className="h-9 w-9 rounded-md text-text-primary hover:bg-table-row-selected hover:text-primary"
             onClick={onNavigationToggle}
           />
         </Tooltip>
@@ -65,7 +65,7 @@ export function Navbar({ siderCollapsed, isMobile, onNavigationToggle, menuTree,
             type="text"
             icon={<TranslationOutlined />}
             aria-label={t('common.language')}
-            className="h-9 w-9 rounded-md text-text-primary hover:bg-table-row-selected hover:text-laplace"
+            className="h-9 w-9 rounded-md text-text-primary hover:bg-table-row-selected hover:text-primary"
           />
         </Dropdown>
         <Dropdown
@@ -82,7 +82,7 @@ export function Navbar({ siderCollapsed, isMobile, onNavigationToggle, menuTree,
         >
           <button
             type="button"
-            className="flex h-9 cursor-pointer items-center gap-2 rounded-md px-2 text-text-primary transition-colors hover:bg-table-row-selected hover:text-laplace"
+            className="flex h-9 cursor-pointer items-center gap-2 rounded-md px-2 text-text-primary transition-colors hover:bg-table-row-selected hover:text-primary"
           >
             <Avatar size="small" icon={<UserOutlined />} />
             <span className="hidden max-w-32 truncate sm:inline">{displayName}</span>

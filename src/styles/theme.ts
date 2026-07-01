@@ -5,14 +5,14 @@
  */
 import type { ThemeConfig } from 'antd';
 
-export const LAPLACE_BLUE = '#192E76';
+export const PRIMARY_BLUE = '#192E76';
 
 export const aetherPrimitiveTokens = {
   colors: {
-    laplaceBlue: LAPLACE_BLUE,
+    primaryBlue: PRIMARY_BLUE,
     siderNavy: '#142B70',
     siderNavyEnd: '#17327C',
-    laplaceDeep: '#0F1F52',
+    navyDeep: '#0F1F52',
     success: '#67C23A',
     warning: '#E6A23C',
     error: '#F56C6C',
@@ -42,9 +42,9 @@ export const aetherPrimitiveTokens = {
 
 export const aetherSemanticTokens = {
   colors: {
-    primary: aetherPrimitiveTokens.colors.laplaceBlue,
-    link: aetherPrimitiveTokens.colors.laplaceBlue,
-    emphasis: aetherPrimitiveTokens.colors.laplaceBlue,
+    primary: aetherPrimitiveTokens.colors.primaryBlue,
+    link: aetherPrimitiveTokens.colors.primaryBlue,
+    emphasis: aetherPrimitiveTokens.colors.primaryBlue,
     success: aetherPrimitiveTokens.colors.success,
     warning: aetherPrimitiveTokens.colors.warning,
     error: aetherPrimitiveTokens.colors.error,
@@ -53,7 +53,7 @@ export const aetherSemanticTokens = {
     textPrimary: 'rgba(0,0,0,.88)',
     textSecondary: 'rgba(0,0,0,.45)',
     tableRowHover: aetherPrimitiveTokens.colors.pageGray,
-    // laplaceBlue(#192E76 = rgb(25,46,118)) @ 8% —— rgba 无法无损由 hex 派生，故就地锚定来源。
+    // primaryBlue(#192E76 = rgb(25,46,118)) @ 8% —— rgba 无法无损由 hex 派生，故就地锚定来源。
     tableRowSelected: 'rgba(25,46,118,.08)',
   },
   spacing: {
@@ -79,6 +79,30 @@ export const aetherSemanticTokens = {
     card: aetherPrimitiveTokens.shadow.card,
   },
 } as const;
+
+/**
+ * 品牌 CSS 变量注入表 —— 单一数据源桥。
+ *
+ * Tailwind v4 的 @theme 是 CSS-first、AntD token 是 JS object，跨语言无法直接共享。
+ * 此表把 JSX 里 Tailwind class（bg-* / text-*）真正用到的那一小撮值，从上面的
+ * primitive / semantic（唯一真值）派生出来，运行时注入到 :root 的 --brand-* 变量。
+ * global.css 的 @theme inline 与手写规则只引用 var(--brand-*)，不再镜像任何字面量。
+ * 改色只改上面的 primitive / semantic 一处，AntD token 与 Tailwind class 同步生效。
+ */
+export const brandCssVars: Readonly<Record<`--brand-${string}`, string>> = {
+  '--brand-page': aetherPrimitiveTokens.colors.pageGray,
+  '--brand-primary': aetherPrimitiveTokens.colors.primaryBlue,
+  '--brand-nav': aetherPrimitiveTokens.colors.siderNavy,
+  '--brand-nav-deep': aetherPrimitiveTokens.colors.navyDeep,
+  '--brand-header-bg': aetherPrimitiveTokens.colors.white,
+  '--brand-card-bg': aetherPrimitiveTokens.colors.white,
+  '--brand-text-primary': aetherSemanticTokens.colors.textPrimary,
+  '--brand-text-secondary': aetherSemanticTokens.colors.textSecondary,
+  '--brand-table-row-hover': aetherSemanticTokens.colors.tableRowHover,
+  '--brand-table-row-selected': aetherSemanticTokens.colors.tableRowSelected,
+  // 正文默认字号 —— body 裸文字继承此值；与 AntD fontSize token 同源，绝不双写。
+  '--brand-font-base': `${aetherPrimitiveTokens.fontSize.body}px`,
+};
 
 export const aetherComponentTokens = {
   layout: {
