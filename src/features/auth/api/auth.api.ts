@@ -9,7 +9,7 @@
  */
 import type { CurrentUserRead, TokenRead } from './auth.types';
 
-import { apiClient } from '@/api/client';
+import { apiClient } from '@/lib/http/client';
 
 
 export async function login(username: string, password: string): Promise<TokenRead> {

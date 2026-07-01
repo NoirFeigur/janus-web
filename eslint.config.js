@@ -8,7 +8,7 @@ import { globalIgnores } from 'eslint/config';
 import tseslint from 'typescript-eslint';
 
 export default tseslint.config([
-  globalIgnores(['dist', 'node_modules', 'coverage', 'src/api/generated']),
+  globalIgnores(['dist', 'node_modules', 'coverage', 'src/lib/openapi']),
   {
     files: ['**/*.{ts,tsx}'],
     extends: [
@@ -58,7 +58,6 @@ export default tseslint.config([
             },
             {
               target: [
-                './src/api',
                 './src/stores',
                 './src/lib',
                 './src/components',
@@ -74,9 +73,9 @@ export default tseslint.config([
               message: 'features 不得 import pages（页面是顶层编排层）。',
             },
             {
-              target: './src/api/generated',
+              target: './src/lib/openapi',
               from: ['./src/features', './src/app', './src/pages', './src/stores', './src/lib'],
-              message: 'api/generated 是叶子，codegen 产物只被依赖、不依赖业务。',
+              message: 'lib/openapi 是叶子，codegen 产物只被依赖、不依赖业务。',
             },
           ],
         },

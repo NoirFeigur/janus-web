@@ -12,7 +12,6 @@ export default defineConfig({
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
       '@features': fileURLToPath(new URL('./src/features', import.meta.url)),
-      '@api': fileURLToPath(new URL('./src/api', import.meta.url)),
       '@stores': fileURLToPath(new URL('./src/stores', import.meta.url)),
       '@lib': fileURLToPath(new URL('./src/lib', import.meta.url)),
     },
@@ -44,7 +43,7 @@ export default defineConfig({
       exclude: [
         '**/*.test.{ts,tsx}',
         'tests/**',
-        'src/api/generated/**',
+        'src/lib/openapi/**',
         'src/**/*.d.ts',
         'src/main.tsx',
         'src/App.tsx',

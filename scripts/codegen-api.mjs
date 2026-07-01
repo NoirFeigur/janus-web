@@ -1,6 +1,6 @@
 // @ts-check
 /**
- * codegen-api —— 从后端 OpenAPI 离线生成前端 API 类型(src/api/generated/types.ts)。
+ * codegen-api —— 从后端 OpenAPI 离线生成前端 API 类型(src/lib/openapi/types.ts)。
  *
  * 契约:后端出入参类型由 codegen 从 janus-server 的 OpenAPI 生成,前端**不手抄**
  * (避免漂移,见设计规范「类型安全」)。
@@ -28,7 +28,7 @@ const SERVER_DIR = process.env.JANUS_SERVER_DIR
   ? resolve(process.env.JANUS_SERVER_DIR)
   : resolve(WEB_ROOT, '..', 'janus-server');
 
-const OUT_PATH = join(WEB_ROOT, 'src', 'api', 'generated', 'types.ts');
+const OUT_PATH = join(WEB_ROOT, 'src', 'lib', 'openapi', 'types.ts');
 
 /** 在后端仓库内用其 uv 环境 dump app.openapi() 到指定文件。 */
 function dumpSchema(schemaPath) {
@@ -74,7 +74,7 @@ function main() {
   try {
     dumpSchema(schemaPath);
     generateTypes(schemaPath);
-    process.stdout.write(`✓ API types → src/api/generated/types.ts\n`);
+    process.stdout.write(`✓ API types → src/lib/openapi/types.ts\n`);
   } finally {
     rmSync(tmp, { recursive: true, force: true });
   }

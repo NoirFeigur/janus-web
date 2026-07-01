@@ -8,7 +8,7 @@ import { message } from 'antd';
 import { http, HttpResponse } from 'msw';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { server } from '../../tests/msw/server';
+import { server } from '../../../tests/msw/server';
 
 import { apiClient } from './interceptors';
 

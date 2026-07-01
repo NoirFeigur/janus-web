@@ -6,7 +6,7 @@
  * - 错误 4xx/5xx：{ success: false, code, params, trace_id, errors? }
  *
  * 注意：这**不是** RFC 9457 problem+json（README 旧表述有误，见设计规范 §5）。
- * 运行时类型最终以 `pnpm codegen` 生成的 src/api/generated 为准；此处是手写镜像。
+ * 运行时类型最终以 `pnpm codegen` 生成的 src/lib/openapi 为准；此处是手写镜像。
  */
 
 /** 成功响应信封。 */

@@ -1,10 +1,10 @@
 /**
  * auth mutations 测试 —— 登录复合流（login→getMe→setSession）+ 登出清态。
  *
- * MSW 返回成功信封，经真实拦截器解包（import '@/api/interceptors' 挂载）；
+ * MSW 返回成功信封，经真实拦截器解包（import '@/lib/http/interceptors' 挂载）；
  * 断言 auth.store 的会话状态变化，而非内部实现。
  */
-import '@/api/interceptors';
+import '@/lib/http/interceptors';
 
 import { useAuthStore } from '@stores/auth.store';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';

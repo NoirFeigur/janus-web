@@ -1,7 +1,7 @@
 /** users 业务请求函数 —— 调基础 HTTP 层，是人写的边界（设计规范 §API 三层）。 */
 import type { User } from './users.types';
 
-import { apiClient } from '@/api/interceptors';
+import { apiClient } from '@/lib/http/interceptors';
 import type { Page } from '@/types/api';
 
 

@@ -1,8 +1,8 @@
 /**
  * menu.api 测试 —— getCurrentMenus 打 /admin/menus/current，成功信封被拦截器解包。
- * import '@/api/interceptors' 挂载真实拦截器；MSW 返回信封，断言拿到内层数组。
+ * import '@/lib/http/interceptors' 挂载真实拦截器；MSW 返回信封，断言拿到内层数组。
  */
-import '@/api/interceptors';
+import '@/lib/http/interceptors';
 
 import { http, HttpResponse } from 'msw';
 import { describe, expect, it } from 'vitest';

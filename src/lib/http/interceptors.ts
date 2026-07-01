@@ -21,7 +21,7 @@ import type { AxiosError, AxiosRequestConfig, InternalAxiosRequestConfig } from 
 
 import { apiClient } from './client';
 
-import type { components } from '@/api/generated/types';
+import type { components } from '@/lib/openapi/types';
 import { type ErrorEnvelope, ApiError, type SuccessEnvelope } from '@/types/api';
 
 type TokenRead = components['schemas']['TokenRead'];

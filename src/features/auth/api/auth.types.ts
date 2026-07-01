@@ -2,7 +2,7 @@
  * auth feature 本地类型 —— 表单态 + 会话映射。
  * API 出入参类型来自 generated（不手抄），此处仅本模块专用的视图/表单类型。
  */
-import type { components } from '@/api/generated/types';
+import type { components } from '@/lib/openapi/types';
 
 /** 登录表单值。 */
 export interface LoginFormValues {

@@ -1,7 +1,7 @@
 /** menu 业务请求函数 —— 调基础 HTTP 层，是人写的边界（设计规范 §API 三层）。 */
 import type { MenuRead } from './menu.types';
 
-import { apiClient } from '@/api/interceptors';
+import { apiClient } from '@/lib/http/interceptors';
 
 /**
  * 拉取当前用户可见的菜单（服务端驱动侧栏）。
