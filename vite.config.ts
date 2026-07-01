@@ -35,7 +35,17 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       reporter: ['text', 'html'],
-      exclude: ['**/*.test.{ts,tsx}', 'tests/**', 'src/api/generated/**'],
+      // 只统计 src 下的源码;排除构建产物、配置、脚本、类型声明与入口装配
+      // （入口/壳只做装配，无独立逻辑，纳入只会稀释真实业务覆盖率）。
+      include: ['src/**/*.{ts,tsx}'],
+      exclude: [
+        '**/*.test.{ts,tsx}',
+        'tests/**',
+        'src/api/generated/**',
+        'src/**/*.d.ts',
+        'src/main.tsx',
+        'src/App.tsx',
+      ],
     },
   },
 });
