@@ -1,24 +1,52 @@
 /**
  * 全局样式入口 —— Tailwind CSS 4（CSS-first，无 tailwind.config.js）。
  *
- * @layer 声明顺序把 antd 压在 utilities 之前：Tailwind 工具类天然能覆盖 antd，
+ * @layer 声明顺序把 antd / antd-pro 压在 components、utilities 之前：
+ * Tailwind 工具类与本项目 components 层覆盖天然能压过 antd 组件样式，
  * 且 Tailwind 的 preflight（base 层）不会重置 antd 组件样式。
+ * 注意 antd-pro 是 @ant-design/pro-components 实际使用的层名 —— 必须显式声明，
+ * 否则「未声明即用」的层会被追加到所有已声明层之后（连 utilities 都盖不住它）。
  * 配合 app/providers.tsx 里的 <StyleProvider layer>，antd 的 CSS-in-JS 产物落进 antd 层。
  * 详见 https://ant.design/docs/react/compatible-style-cn
  */
-@layer theme, base, antd, components, utilities;
+@layer theme, base, antd, antd-pro, components, utilities;
 
 @import 'tailwindcss';
 
-/* 品牌色映射进 Tailwind 主题 —— 用 bg-laplace / text-laplace，JSX 里不写裸 hex。 */
+/*
+ * 全高链 —— 让 #root 及其下的 min-h-screen/h-full 有可依据的祖先高度。
+ * 归入 base 层：仅托底，绝不与 antd 组件或 utilities 争权。
+ */
+@layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+}
+
+/*
+ * Tailwind 4 @theme —— 只声明 JSX 里真正用作工具类的 token。
+ *
+ * 颜色/圆角/组件级样式的「真值」统一归 AntD 主题（src/styles/theme.ts）；
+ * 这里不再镜像整套配色，只保留 Tailwind class（bg-* / text-*）实际依赖的那一小撮，
+ * 避免同一批值在 CSS 与 TS 两处重复维护。
+ */
 @theme {
+  /* 品牌色 —— 仅 JSX 用作 bg-* / text-* 的颜色（white 用 Tailwind 内置）。 */
+  --color-page: #f5f6fa;
   --color-laplace: #192e76;
   --color-laplace-sider: #142b70;
   --color-laplace-deep: #0f1f52;
-  --color-success: #67c23a;
-  --color-warning: #e6a23c;
-  --color-error: #f56c6c;
-  --color-page: #f5f6fa;
+  --color-header-bg: #ffffff;
+  --color-card-bg: #ffffff;
+  --color-text-primary: rgba(0, 0, 0, 0.88);
+  --color-text-secondary: rgba(0, 0, 0, 0.45);
+  --color-table-row-hover: #f5f6fa;
+  --color-table-row-selected: rgba(25, 46, 118, 0.08);
+
+  /* 字号 —— 把 Tailwind 默认 text-base(16px) 收敛到规范正文 14px。 */
+  --text-base: 14px;
 }
 
 /* 登录页动效 —— 表单入场（增强已可见的默认态，非隐藏后再显）+ 门户环缓旋。 */
@@ -49,6 +77,95 @@
 .janus-portal-ring {
   transform-origin: center;
   animation: janus-portal-spin 48s linear infinite;
+}
+
+/*
+ * PageContainer 内边距收口 —— Content 已提供 16px 外层 gutter，
+ * ProPageContainer 头部与内容体各自默认再叠 40px 横向内边距（标题距侧栏 56px，过宽，
+ * 且标题 16px 与内容体 56px 错位）。归入 components 层（现已高于 antd-pro 层）：
+ * 抹掉两处横向双重内边距，标题与内容对齐 Content 的单一 gutter。
+ */
+@layer components {
+  .janus-sider,
+  .janus-mobile-drawer .ant-drawer-body {
+    background: linear-gradient(180deg, var(--color-laplace-sider) 0%, var(--color-laplace-deep) 100%);
+  }
+
+  .janus-sider .ant-layout-sider-children,
+  .janus-mobile-drawer .ant-drawer-body {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .janus-mobile-drawer .ant-drawer-content,
+  .janus-mobile-drawer .ant-drawer-body {
+    padding: 0;
+    background: var(--color-laplace-deep);
+  }
+
+  .janus-sider-logo {
+    box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.08);
+  }
+
+  .janus-sider.ant-layout-sider-collapsed .janus-sider-logo span:last-child {
+    display: none;
+  }
+
+  .janus-sider .ant-menu,
+  .janus-mobile-drawer .ant-menu {
+    flex: 1;
+    padding-block: 8px;
+    background: transparent;
+  }
+
+  .janus-sider .ant-menu-dark .ant-menu-item,
+  .janus-sider .ant-menu-dark .ant-menu-submenu-title,
+  .janus-mobile-drawer .ant-menu-dark .ant-menu-item,
+  .janus-mobile-drawer .ant-menu-dark .ant-menu-submenu-title {
+    margin-inline: 8px;
+    width: calc(100% - 16px);
+    border-radius: 6px;
+  }
+
+  .janus-sider .ant-menu-dark .ant-menu-item-selected,
+  .janus-mobile-drawer .ant-menu-dark .ant-menu-item-selected {
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+  }
+
+  .janus-sider .ant-menu-dark .ant-menu-item:not(.ant-menu-item-selected):hover,
+  .janus-sider .ant-menu-dark .ant-menu-submenu-title:hover,
+  .janus-mobile-drawer .ant-menu-dark .ant-menu-item:not(.ant-menu-item-selected):hover,
+  .janus-mobile-drawer .ant-menu-dark .ant-menu-submenu-title:hover {
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .janus-page .ant-pro-page-container-warp-page-header {
+    padding-inline: 0;
+    padding-block: 0 16px;
+  }
+
+  .janus-page .ant-page-header-heading-title {
+    color: var(--color-text-primary);
+    font-size: 16px;
+    font-weight: 600;
+  }
+
+  .janus-page .ant-pro-page-container-children-container {
+    padding-inline: 0;
+  }
+
+  .janus-page .ant-pro-card,
+  .janus-page .ant-card {
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+  }
+
+  .janus-tags-scroll {
+    scrollbar-width: none;
+  }
+
+  .janus-tags-scroll::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -11,7 +11,7 @@ interface StatCardProps {
 
 export function StatCard({ title, value, suffix, loading }: StatCardProps) {
   return (
-    <ProCard bordered>
+    <ProCard bordered className="h-full">
       <StatisticCard.Statistic title={title} value={value} suffix={suffix} loading={loading} />
     </ProCard>
   );

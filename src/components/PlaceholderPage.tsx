@@ -8,7 +8,9 @@ export default function PlaceholderPage() {
   const t = useT();
   return (
     <PageContainer>
-      <Empty description={t('common.comingSoon')} />
+      <div className="grid min-h-80 place-items-center rounded-md bg-card-bg p-6 shadow-sm">
+        <Empty description={t('common.comingSoon')} />
+      </div>
     </PageContainer>
   );
 }

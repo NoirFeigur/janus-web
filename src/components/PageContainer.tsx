@@ -10,6 +10,8 @@ interface PageContainerProps {
 
 export function PageContainer({ title, extra, children }: PageContainerProps) {
   return (
-    <ProPageContainer header={{ title, extra, ghost: true }}>{children}</ProPageContainer>
+    <ProPageContainer className="janus-page" header={{ title, extra, ghost: true }}>
+      {children}
+    </ProPageContainer>
   );
 }

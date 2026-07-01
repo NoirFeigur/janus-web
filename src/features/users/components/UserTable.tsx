@@ -62,6 +62,7 @@ export function UserTable() {
       columns={columns}
       search={{ filterType: 'light' }}
       pagination={{ pageSize: 20, showSizeChanger: true }}
+      scroll={{ x: 900 }}
       request={(params) =>
         proTableRequest<User>(
           ({ limit, offset, ...filters }) =>
