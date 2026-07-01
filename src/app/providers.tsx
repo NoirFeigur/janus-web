@@ -29,7 +29,12 @@ export function AppProviders({ children }: { children: ReactNode }) {
       <RawIntlProvider value={intl}>
         {/* layer：把 antd 的 CSS-in-JS 落进 @layer antd，Tailwind 工具类才能覆盖（见 global.css）。 */}
         <StyleProvider layer>
-          <ConfigProvider theme={antdTheme} locale={ANTD_LOCALES[locale]}>
+          {/*
+           * warning.strict=false：聚合弃用告警而非逐条刷屏。当前 pro-components 2.8.10 的内部
+           * LightSelect 仍用 antd 5.25+ 已弃用的 dropdownRender/onDropdownVisibleChange 旧 prop 名，
+           * 告警源自第三方库、非本项目代码，待 pro-components 跟进后可移除此项。
+           */}
+          <ConfigProvider theme={antdTheme} locale={ANTD_LOCALES[locale]} warning={{ strict: false }}>
             <AntdApp>{children}</AntdApp>
           </ConfigProvider>
         </StyleProvider>
