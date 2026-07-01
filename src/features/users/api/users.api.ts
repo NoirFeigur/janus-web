@@ -9,6 +9,7 @@ export interface ListUsersParams {
   limit: number;
   offset: number;
   keyword?: string;
+  employee_no?: string;
   status?: string;
 }
 

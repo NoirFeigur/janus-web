@@ -26,7 +26,6 @@ export function UserTable() {
       {
         title: t('pages.user.employeeNo'),
         dataIndex: 'employee_no',
-        search: false,
       },
       {
         title: t('pages.user.realName'),
@@ -70,6 +69,7 @@ export function UserTable() {
               limit,
               offset,
               keyword: filters.username as string | undefined,
+              employee_no: filters.employee_no as string | undefined,
               status: filters.status as string | undefined,
             }),
           params,
