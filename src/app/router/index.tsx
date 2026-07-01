@@ -17,7 +17,8 @@ import { AppLayout } from '@/app/AppLayout';
  * 新增功能页：加一行 + 在 componentRegistry 登记组件 + 后端菜单填同名 component。
  */
 const ROUTE_MANIFEST: { path: string; component: string }[] = [
-  { path: paths.dashboard, component: 'DashboardPage' },
+  // dashboard 内容暂下线，统一走「即将上线」占位；恢复只需改回 'DashboardPage'。
+  { path: paths.dashboard, component: 'PlaceholderPage' },
   { path: paths.users, component: 'UsersPage' },
   { path: paths.credentials, component: 'PlaceholderPage' },
   { path: paths.catalog, component: 'PlaceholderPage' },
@@ -28,7 +29,8 @@ const ROUTE_MANIFEST: { path: string; component: string }[] = [
 
 const LoginPage = resolveComponent('LoginPage');
 const NotFoundPage = resolveComponent('NotFoundPage');
-const HomePage = resolveComponent('HomePage');
+// 首页内容暂下线，落地 '/' 直接展示「即将上线」占位；恢复改回 resolveComponent('HomePage')。
+const HomeElement = resolveComponent('PlaceholderPage');
 
 /** 懒加载页套 Suspense —— helper（非组件），避开 react-refresh 单文件多导出限制。 */
 const lazyElement = (Page: ComponentType) => (
@@ -55,8 +57,8 @@ export const router = createBrowserRouter([
       </AuthGuard>
     ),
     children: [
-      // 固定首页：登录后落地 '/'（门户页，非动态菜单，不过菜单守卫）。
-      { index: true, element: lazyElement(HomePage) },
+      // 固定首页：登录后落地 '/'（门户页，非动态菜单，不过菜单守卫）。内容暂下线，走占位。
+      { index: true, element: lazyElement(HomeElement) },
       ...ROUTE_MANIFEST.map(({ path, component }) => ({
         path,
         element: guardedElement(component),
