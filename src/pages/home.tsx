@@ -12,7 +12,7 @@ import { Card, Col, Row, Typography } from 'antd';
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { PageContainer } from '@/components/PageContainer';
+import { BasicContainer } from '@/components/BasicContainer';
 import { useT } from '@/hooks/useT';
 
 export default function HomePage() {
@@ -32,7 +32,7 @@ export default function HomePage() {
   );
 
   return (
-    <PageContainer title={t('menu.home')}>
+    <BasicContainer>
       <Typography.Title level={4} className="!mb-1">
         {t('pages.home.greeting', { name: greetingName })}
       </Typography.Title>
@@ -57,6 +57,6 @@ export default function HomePage() {
           </Col>
         ))}
       </Row>
-    </PageContainer>
+    </BasicContainer>
   );
 }

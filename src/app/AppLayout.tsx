@@ -129,7 +129,7 @@ export function AppLayout() {
           {menu}
         </Sider>
       )}
-      <Layout className="min-w-0 bg-page">
+      <Layout className="h-[100dvh] min-w-0 bg-page">
         <Header className="sticky top-0 z-10 h-12 bg-header-bg p-0 leading-none shadow-sm">
           <Navbar
             siderCollapsed={effectiveCollapsed}
@@ -140,7 +140,7 @@ export function AppLayout() {
           />
         </Header>
         <TagsView menuTree={menuTree} />
-        <Content className="min-h-0 min-w-0 overflow-x-hidden bg-page p-4">
+        <Content className="min-h-0 min-w-0 flex-1 overflow-hidden bg-page">
           <Outlet />
         </Content>
       </Layout>

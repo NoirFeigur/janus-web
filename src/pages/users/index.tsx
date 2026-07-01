@@ -1,14 +1,12 @@
-/** 用户管理页（薄）—— 只编排 feature，不写业务逻辑。 */
+/** 用户管理页（薄）—— 只编排 feature（间距/高度由 BasicContainer 统一提供）。 */
 import { UserTable } from '@features/users/components/UserTable';
 
-import { PageContainer } from '@/components/PageContainer';
-import { useT } from '@/hooks/useT';
+import { BasicContainer } from '@/components/BasicContainer';
 
 export default function UsersPage() {
-  const t = useT();
   return (
-    <PageContainer title={t('menu.users')}>
+    <BasicContainer block>
       <UserTable />
-    </PageContainer>
+    </BasicContainer>
   );
 }

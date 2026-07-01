@@ -1,14 +1,12 @@
-/** 概览页 —— 薄编排层：套 PageContainer，渲染 features/dashboard 的业务组件。 */
+/** 概览页 —— 薄编排层：渲染 features/dashboard 的业务组件（间距/底色由 BasicContainer 统一提供）。 */
 import { DashboardOverview } from '@features/dashboard/components/DashboardOverview';
 
-import { PageContainer } from '@/components/PageContainer';
-import { useT } from '@/hooks/useT';
+import { BasicContainer } from '@/components/BasicContainer';
 
 export default function DashboardPage() {
-  const t = useT();
   return (
-    <PageContainer title={t('menu.dashboard')}>
+    <BasicContainer>
       <DashboardOverview />
-    </PageContainer>
+    </BasicContainer>
   );
 }
