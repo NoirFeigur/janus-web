@@ -113,7 +113,10 @@ export function UserFormDrawer({
   const applyFieldErrors = (error: unknown): boolean => {
     if (error instanceof ApiError && error.fieldErrors.length > 0) {
       form.setFields(
-        error.fieldErrors.map((fe) => ({ name: fe.field, errors: [fe.msg] })),
+        error.fieldErrors.map((fe) => ({
+          name: fe.field as keyof UserFormValues,
+          errors: [fe.msg],
+        })),
       );
       return true;
     }

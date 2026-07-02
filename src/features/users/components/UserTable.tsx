@@ -140,12 +140,12 @@ export function UserTable() {
 
   const columns: ProColumns<User>[] = useMemo(
     () => [
-      { title: t('common.username'), dataIndex: 'username', width: 140, ellipsis: true },
-      { title: t('pages.user.employeeNo'), dataIndex: 'employee_no', width: 120 },
+      { title: t('common.username'), dataIndex: 'username', width: 150, ellipsis: true },
+      { title: t('pages.user.employeeNo'), dataIndex: 'employee_no', width: 150 },
       {
         title: t('pages.user.realName'),
         dataIndex: 'real_name',
-        width: 100,
+        width: 150,
         render: (_, row) => orDash(row.real_name),
       },
       {
@@ -157,19 +157,19 @@ export function UserTable() {
       {
         title: t('common.status'),
         dataIndex: 'status',
-        width: 80,
+        width: 100,
         render: (_, row) => <UserStatusBadge status={row.status} />,
       },
       {
         title: t('common.createdAt'),
         dataIndex: 'created_at',
         valueType: 'dateTime',
-        width: 160,
+        width: 250,
       },
       {
         title: t('common.actions'),
         key: 'actions',
-        width: 180,
+        width: 250,
         fixed: 'right',
         render: (_, row) => (
           <Space size="small">
@@ -203,42 +203,46 @@ export function UserTable() {
     [t],
   );
 
-  return (
-    <div className="flex h-full min-h-0 flex-col">
-      <div className="shrink-0 px-1 pb-3">
+  // @ts-ignore
+    return (
+    <div className="flex h-full min-h-0 flex-col rounded-lg bg-card-bg shadow-sm">
+      {/* 统一顶栏：筛选 + 操作，一行搞定 */}
+      <div className="shrink-0 border-b border-border-secondary px-4 py-3">
         <UserFilterBar
           value={filters}
           onChange={setFilters}
           onReset={handleReset}
           total={total}
           loading={loading}
-        />
-      </div>
-
-      <div className="user-table-fill min-h-0 flex-1">
-        <ProTable<User>
-          actionRef={actionRef}
-          rowKey="id"
-          size="small"
-          columns={columns}
-          search={false}
-          options={{ reload: true, density: false, setting: true }}
-          params={queryParams}
-          scroll={{ x: 900 }}
-          pagination={{
-            pageSize: 20,
-            showSizeChanger: true,
-            showTotal: (t) => `共 ${t} 条`,
-            size: 'small',
-          }}
-          rowSelection={{ preserveSelectedRowKeys: true }}
-          headerTitle={
+          actions={
             <Access perm="system:user:add">
               <Button type="primary" icon={<PlusOutlined />} onClick={openCreate}>
                 {t('common.create')}
               </Button>
             </Access>
           }
+        />
+      </div>
+
+      {/* 表格区：撑满剩余高度，无自带 toolbar */}
+      <div className="min-h-0 flex-1">
+        <ProTable<User>
+          actionRef={actionRef}
+          rowKey="id"
+          size="middle"
+          columns={columns}
+          search={false}
+          options={false}
+          toolbar={undefined}
+          headerTitle={false}
+          params={queryParams}
+          scroll={{ x: 900, y: 9999 }}
+          pagination={{
+            pageSize: 20,
+            showSizeChanger: true,
+            showTotal: (t) => `共 ${t} 条`,
+          }}
+          rowSelection={{ preserveSelectedRowKeys: true }}
           tableAlertOptionRender={({ selectedRowKeys, onCleanSelected }) => (
             <div className="flex items-center gap-3">
               <Access perm="system:user:remove">

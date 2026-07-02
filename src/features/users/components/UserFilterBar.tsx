@@ -1,12 +1,12 @@
 /**
- * 用户筛选工具栏 —— 常驻、可一眼扫的筛选条（取代 ProTable light 折叠搜索的视觉杂乱）。
+ * 用户筛选工具栏 —— 表格卡片的统一顶栏。
  *
- * 受控组件：父级 UserTable 持有原始筛选态（输入即时响应），防抖后喂给 ProTable 查询。
- * 关键词 + 工号为带清除的输入框；状态用分段控件（全部/启用/禁用，一眼可选）；
- * 右侧显示实时结果计数 + 重置（仅有筛选时可点）。
+ * 左侧：搜索 + 工号 + 状态筛选
+ * 右侧：计数 + 重置 + 操作按钮（新建等，由 slot 传入）
  */
 import { SearchOutlined } from '@ant-design/icons';
 import { Button, Input, Segmented } from 'antd';
+import type { ReactNode } from 'react';
 
 import type { UserStatus } from '../api/users.types';
 
@@ -29,9 +29,11 @@ interface UserFilterBarProps {
   onReset: () => void;
   total: number;
   loading: boolean;
+  /** 右侧操作区插槽（新建按钮等） */
+  actions?: ReactNode;
 }
 
-export function UserFilterBar({ value, onChange, onReset, total, loading }: UserFilterBarProps) {
+export function UserFilterBar({ value, onChange, onReset, total, loading, actions }: UserFilterBarProps) {
   const t = useT();
   const hasFilter = value.keyword !== '' || value.employeeNo !== '' || value.status !== undefined;
 
@@ -41,37 +43,40 @@ export function UserFilterBar({ value, onChange, onReset, total, loading }: User
   ];
 
   return (
-    <div className="flex flex-wrap items-center gap-2">
+    <div className="flex flex-wrap items-center gap-3">
       <Input
         allowClear
-        size="small"
         prefix={<SearchOutlined className="text-text-tertiary" />}
         placeholder={t('pages.user.searchPlaceholder')}
         value={value.keyword}
         onChange={(e) => onChange({ ...value, keyword: e.target.value })}
-        className="w-56"
+        className="w-52"
       />
       <Input
         allowClear
-        size="small"
         placeholder={t('pages.user.employeeNoPlaceholder')}
         value={value.employeeNo}
         onChange={(e) => onChange({ ...value, employeeNo: e.target.value })}
-        className="w-36"
+        className="w-32"
       />
       <Segmented
-        size="small"
+        size="middle"
         options={statusOptions}
         value={value.status ?? ALL}
         onChange={(v) => onChange({ ...value, status: v === ALL ? undefined : (v as UserStatus) })}
       />
-      <div className="ml-auto flex items-center gap-2 text-xs text-text-tertiary">
-        <span>{t('pages.user.totalCount', { total })}</span>
-        {hasFilter && (
-          <Button size="small" type="link" onClick={onReset} disabled={loading} className="!text-xs">
-            {t('pages.user.clearFilters')}
-          </Button>
-        )}
+
+      {hasFilter && (
+        <Button size="small" type="link" onClick={onReset} disabled={loading}>
+          {t('pages.user.clearFilters')}
+        </Button>
+      )}
+
+      <div className="ml-auto flex items-center gap-3">
+        <span className="text-sm text-text-tertiary">
+          {t('pages.user.totalCount', { total })}
+        </span>
+        {actions}
       </div>
     </div>
   );
