@@ -41,34 +41,37 @@ export function UserFilterBar({ value, onChange, onReset, total, loading }: User
   ];
 
   return (
-    <div className="flex flex-wrap items-center gap-3">
+    <div className="flex flex-wrap items-center gap-2">
       <Input
         allowClear
+        size="small"
         prefix={<SearchOutlined className="text-text-tertiary" />}
         placeholder={t('pages.user.searchPlaceholder')}
         value={value.keyword}
         onChange={(e) => onChange({ ...value, keyword: e.target.value })}
-        className="w-60"
+        className="w-56"
       />
       <Input
         allowClear
+        size="small"
         placeholder={t('pages.user.employeeNoPlaceholder')}
         value={value.employeeNo}
         onChange={(e) => onChange({ ...value, employeeNo: e.target.value })}
-        className="w-44"
+        className="w-36"
       />
       <Segmented
+        size="small"
         options={statusOptions}
         value={value.status ?? ALL}
         onChange={(v) => onChange({ ...value, status: v === ALL ? undefined : (v as UserStatus) })}
       />
-      <div className="ml-auto flex items-center gap-3">
-        <span className="text-text-secondary">
-          {t('pages.user.totalCount', { total })}
-        </span>
-        <Button onClick={onReset} disabled={!hasFilter || loading}>
-          {t('common.reset')}
-        </Button>
+      <div className="ml-auto flex items-center gap-2 text-xs text-text-tertiary">
+        <span>{t('pages.user.totalCount', { total })}</span>
+        {hasFilter && (
+          <Button size="small" type="link" onClick={onReset} disabled={loading} className="!text-xs">
+            {t('pages.user.clearFilters')}
+          </Button>
+        )}
       </div>
     </div>
   );

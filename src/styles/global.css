@@ -206,6 +206,34 @@
   .janus-tags-scroll::-webkit-scrollbar {
     display: none;
   }
+
+  /* 用户表格撑满容器高度 —— ProTable 内部 card→body→wrapper 链打通为 flex 拉伸。 */
+  .user-table-fill .ant-pro-table {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .user-table-fill .ant-pro-card {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .user-table-fill .ant-pro-card-body {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 0 !important;
+  }
+
+  .user-table-fill .ant-table-wrapper {
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
