@@ -1,10 +1,10 @@
 /**
- * 用户筛选工具栏 —— 表格卡片的统一顶栏。
+ * 用户筛选工具栏 —— 表格卡片的统一顶栏（旗舰范式：后续 feature 表格照此继承）。
  *
- * 左侧：搜索 + 工号 + 状态筛选
- * 右侧：计数 + 重置 + 操作按钮（新建等，由 slot 传入）
+ * 左区：搜索 + 工号 + 状态分段筛选（输入防抖在父层收敛）
+ * 右区：实时计数 → 重置（无筛选时禁用，常驻不跳动）→ 操作插槽（新建等）
  */
-import { SearchOutlined } from '@ant-design/icons';
+import { ReloadOutlined, SearchOutlined } from '@ant-design/icons';
 import { Button, Input, Segmented } from 'antd';
 import type { ReactNode } from 'react';
 
@@ -37,6 +37,7 @@ export function UserFilterBar({
   value,
   onChange,
   onReset,
+  total,
   loading,
   actions,
 }: UserFilterBarProps) {
@@ -49,21 +50,21 @@ export function UserFilterBar({
   ];
 
   return (
-    <div className="flex flex-wrap items-center gap-3">
+    <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
       <Input
         allowClear
         prefix={<SearchOutlined className="text-text-tertiary" />}
         placeholder={t('pages.user.searchPlaceholder')}
         value={value.keyword}
         onChange={(e) => onChange({ ...value, keyword: e.target.value })}
-        className="w-52"
+        className="w-56"
       />
       <Input
         allowClear
         placeholder={t('pages.user.employeeNoPlaceholder')}
         value={value.employeeNo}
         onChange={(e) => onChange({ ...value, employeeNo: e.target.value })}
-        className="w-32"
+        className="w-36"
       />
       <Segmented
         size="middle"
@@ -72,14 +73,27 @@ export function UserFilterBar({
         onChange={(v) => onChange({ ...value, status: v === ALL ? undefined : (v as UserStatus) })}
       />
 
-      {hasFilter && (
-        <Button size="small" type="link" onClick={onReset} disabled={loading}>
-          {t('pages.user.clearFilters')}
-        </Button>
-      )}
-
       <div className="ml-auto flex items-center gap-3">
-        {actions}
+        {/* 实时计数：tabular-nums 稳定不跳字，弱化墨色不与数据争视线 */}
+        <span className="text-text-secondary text-sm tabular-nums" aria-live="polite">
+          {t('pages.user.totalCount', { total })}
+        </span>
+        {/* 重置常驻，无筛选时禁用——位置不跳动，可发现性优于忽隐忽现 */}
+        <Button
+          type="text"
+          size="small"
+          icon={<ReloadOutlined />}
+          onClick={onReset}
+          disabled={!hasFilter || loading}
+        >
+          {t('common.reset')}
+        </Button>
+        {actions ? (
+          <>
+            <span className="h-4 w-px bg-border-secondary" aria-hidden />
+            {actions}
+          </>
+        ) : null}
       </div>
     </div>
   );

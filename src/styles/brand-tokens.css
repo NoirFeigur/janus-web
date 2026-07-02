@@ -6,35 +6,38 @@
  * 要改品牌色：改 theme.ts 后重跑 `pnpm codegen`。
  */
 :root {
-  --brand-page: #f5f6fa;
-  --brand-primary: #192e76;
-  --brand-nav: #142b70;
-  --brand-nav-deep: #0f1f52;
-  --brand-header-bg: #ffffff;
-  --brand-card-bg: #ffffff;
-  --brand-text-primary: rgba(0, 0, 0, 0.88);
-  --brand-text-secondary: rgba(0, 0, 0, 0.45);
-  --brand-text-tertiary: rgba(0, 0, 0, 0.25);
-  --brand-border: #e4e7ed;
-  --brand-border-secondary: #eef0f4;
-  --brand-fill-hover: rgba(0, 0, 0, 0.02);
-  --brand-fill-active: rgba(0, 0, 0, 0.04);
-  --brand-table-row-hover: #f5f6fa;
-  --brand-table-row-selected: rgba(25, 46, 118, 0.08);
-  --brand-success: #3b9e4e;
-  --brand-success-bg: #f0f9eb;
-  --brand-success-border: #d8efcc;
-  --brand-warning: #d98a0b;
-  --brand-warning-bg: #fdf6ec;
-  --brand-warning-border: #fae7c8;
-  --brand-error: #dc4a4a;
-  --brand-error-bg: #fef0f0;
-  --brand-error-border: #fbdada;
-  --brand-info: #192e76;
-  --brand-info-bg: rgba(25, 46, 118, 0.06);
-  --brand-info-border: rgba(25, 46, 118, 0.16);
+  --brand-page: #EAEDF5;
+  --brand-surface-sunken: #EAEDF5;
+  --brand-primary: #2D50C8;
+  --brand-primary-hover: #3A5DD9;
+  --brand-primary-active: #2543AE;
+  --brand-primary-subtle: rgba(45,80,200,.08);
+  --brand-primary-subtle-border: rgba(45,80,200,.20);
+  --brand-nav: #1E2230;
+  --brand-nav-deep: #171B26;
+  --brand-header-bg: #FFFFFF;
+  --brand-card-bg: #FFFFFF;
+  --brand-text-primary: #1A1F2E;
+  --brand-text-secondary: #5A6274;
+  --brand-text-tertiary: #8A92A6;
+  --brand-border: #E3E6EE;
+  --brand-border-secondary: #EEF0F5;
+  --brand-fill-hover: rgba(48,58,84,.04);
+  --brand-fill-active: rgba(48,58,84,.07);
+  --brand-table-row-hover: #F4F6FA;
+  --brand-table-row-selected: rgba(45,80,200,.08);
+  --brand-success: #2E8B57;
+  --brand-success-bg: #ECF7F0;
+  --brand-success-border: #CBE8D5;
+  --brand-warning: #C77A0A;
+  --brand-warning-bg: #FBF3E6;
+  --brand-warning-border: #F2DDB8;
+  --brand-error: #D23F3F;
+  --brand-error-bg: #FBECEC;
+  --brand-error-border: #F3CDCD;
+  --brand-info: #2D50C8;
+  --brand-info-bg: rgba(45,80,200,.08);
+  --brand-info-border: rgba(45,80,200,.20);
   --brand-font-base: 14px;
-  --brand-font-family:
-    'Inter Variable', 'Inter', -apple-system, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei',
-    sans-serif;
+  --brand-font-family: "Inter Variable", "Inter", -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
 }

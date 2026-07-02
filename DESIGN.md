@@ -123,7 +123,7 @@ One family carries everything (product UI needs no display/body pairing). Fixed 
 | Between elements | 12px (`gap-3`) | Form items, list items |
 | Card padding | 20px (`p-5`) | Card / drawer content inset |
 | Card gap | 16px (`gap-4`) | Gaps between cards in a grid |
-| Page gutter | 16px (`p-4`) | Content's single outer gutter (unifies the current `p-2`/`p-4` drift) |
+| Page gutter | 8px (`p-2`) | Content's single outer gutter (`BasicContainer`) — tight by design for data density |
 | Section spacing | 24px (`gap-6`) | Between large blocks |
 
 ### Shell dimensions
@@ -134,7 +134,7 @@ One family carries everything (product UI needs no display/body pairing). Fixed 
 | TagsView height | 40px (`h-10`) | Unchanged |
 | Sider expanded | 224px (`w-56`) | Wider for two-level CJK menu labels |
 | Sider collapsed | 72px | Tighter icon rail |
-| Content gutter | 16px | Title and body share one inset |
+| Content gutter | 8px (`p-2`) | Tight by design for data density; title and body share one inset |
 
 ### Grid & responsiveness
 - Breakpoints: mobile `<768px`, tablet `768–1023px`, desktop `≥1024px`.
@@ -222,14 +222,16 @@ Product register: motion conveys state, never decoration. No orchestrated page-l
 `features/users/components/UserTable.tsx` is the reference every feature table inherits from. It is a **list page**, not a master-detail page (no org tree in phase one — see [`docs/前端设计规范.md`](docs/前端设计规范.md) §11 gap list).
 
 ### Layout
-- **One full-height white card** (elevation 1, radius 8px) filling the Content area; the card owns internal scroll, the page does not grow.
-- Vertical structure: **sticky filter toolbar** (top, on sunken surface, `border-b`) → **scrollable table body** (fills remaining height, sticky header) → **pinned pagination** (bottom).
-- Toolbar inset `px-4 py-3`; table rows at AntD `size="middle"` density with tabular-nums body.
+- **Two floating white cards** on the gray page canvas (`--color-page`), separated by a `gap-3`: a **filter toolbar card** on top and a **full-height table card** below. The canvas showing through the gap does the separating — no internal color bands inside a single container (that horizontal-stripe pattern is what read as fragmented; avoid it).
+- Filter card: `rounded-lg bg-card-bg shadow-sm px-4 py-3`, sized to content. Table card: `rounded-lg bg-card-bg shadow-sm overflow-hidden flex-1`, owns internal scroll (sticky header + pinned pagination), the page does not grow.
+- **Restrained two-value palette (figure-ground):** white = every raised surface (both cards, inputs, selected segment pill, data rows); one recessed gray `#EAEDF5` = the page canvas **and** the `Segmented` track (single recessed tone, never a 2nd/3rd near-white); indigo = action + current selection only. This collapse to white + one gray + accent is what makes the surfaces read as coordinated.
+- **Table header has no gray fill** — white (same as data rows), distinguished by its bottom border + muted (`textSecondary`) column labels. Structure and weight separate it, not a fill band. Rows at AntD `size="middle"` density with tabular-nums body.
 
 ### Filter toolbar (always-visible, not Pro's collapsed search)
-- Debounced keyword input + employee-no input (`useDebouncedValue` → `params`); status `Segmented` control (point-select, no debounce).
-- A **live result count** and a **reset** that enables only when a filter is active.
-- Primary **Create** button (`system:user:add` gated) sits at the toolbar's trailing edge.
+- Debounced keyword input + employee-no input (`useDebouncedValue` → `params`); status `Segmented` control (point-select, no debounce). Inputs sit left; count / reset / actions sit right (`ml-auto`).
+- A **live result count** (`pages.user.totalCount`, tabular-nums, `aria-live="polite"`, secondary ink) is **always rendered** — it is the toolbar's job, so the pagination bar drops its `showTotal` to avoid a duplicate total.
+- A **reset** (`type="text"` + reload icon) is **always visible but disabled when no filter is active** — a fixed position beats a button that appears and shifts the layout.
+- Primary **Create** button (`system:user:add` gated) sits at the toolbar's trailing edge, separated from the count/reset group by a thin `w-px` divider.
 - ProTable runs `search={false} options={false} headerTitle={false}` — the toolbar fully owns filtering.
 
 ### Columns
@@ -237,7 +239,7 @@ Product register: motion conveys state, never decoration. No orchestrated page-l
 - Null or empty cells render a tertiary-toned `—` dash-placeholder — never a blank cell.
 - **Status column** = `UserStatusBadge`: colored dot **plus** text (dual-channel, never color-alone), tone from `USER_STATUS_META` (single source: status → `labelKey` → tone), drawn from the §2.4 state vocabulary.
 - created-at uses `valueType: 'dateTime'`, tabular-nums aligned.
-- **Actions column** (`fixed: 'right'`): `Edit` / `Reset password` / `Delete` as permission-gated (`<Access>`) link buttons; delete is `danger` and always confirms via modal.
+- **Actions column** (`fixed: 'right'`): `Edit` / `Reset password` / `Delete` as link buttons filtered **imperatively** via `useAccess` (not `<Access>` wrappers) and joined by thin vertical dividers — so a hidden action never leaves a dangling separator, and the column reads as one compact action band. Delete is `danger` and always confirms via modal. When the user can do none, the cell shows the `—` dash-placeholder.
 
 ### Interaction & states
 - **Row hover**: `--color-table-row-hover` fill. **Row selected**: `--color-primary-subtle` fill.

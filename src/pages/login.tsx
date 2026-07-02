@@ -29,7 +29,7 @@ interface FromState {
 /** 开发期预填，方便本地调试；生产构建（import.meta.env.DEV=false）下为空，绝不硬编码凭据进包。 */
 const DEV_DEFAULTS = import.meta.env.DEV ? { username: 'admin', password: '123456' } : {};
 
-/** 门户 motif —— 同心弧 + 节点点阵，navy 深浅分层，缓旋。纯装饰，aria-hidden。 */
+/** 门户 motif —— 同心弧 + 节点点阵，冷石墨深浅分层。静态、纯装饰，aria-hidden。 */
 function PortalMotif() {
   return (
     <svg
@@ -38,7 +38,7 @@ function PortalMotif() {
       fill="none"
       aria-hidden="true"
     >
-      <g className="janus-portal-ring" opacity="0.9">
+      <g opacity="0.9">
         <circle cx="200" cy="200" r="150" stroke="currentColor" strokeWidth="1" opacity="0.28" />
         <circle
           cx="200"

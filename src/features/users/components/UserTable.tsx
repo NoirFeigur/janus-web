@@ -7,8 +7,8 @@
  */
 import { PlusOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import { ProTable, type ActionType, type ProColumns } from '@ant-design/pro-components';
-import { App, Button, Space, Tooltip } from 'antd';
-import { useMemo, useRef, useState } from 'react';
+import { App, Button, Tooltip } from 'antd';
+import { Fragment, useMemo, useRef, useState } from 'react';
 
 import { listUsers } from '../api/users.api';
 import { useBatchDeleteUsersMutation, useDeleteUserMutation } from '../api/users.queries';
@@ -21,6 +21,7 @@ import { UserStatusBadge } from './UserStatusBadge';
 import { UserTableEmpty } from './UserTableEmpty';
 
 import { Access } from '@/components/Access';
+import { useAccess } from '@/hooks/useAccess';
 import { useDebouncedValue } from '@/hooks/useDebouncedValue';
 import { useT } from '@/hooks/useT';
 import { proTableRequest } from '@/utils/proTableRequest';
@@ -37,6 +38,7 @@ function orDash(value: string | null): React.ReactNode {
 
 export function UserTable() {
   const t = useT();
+  const can = useAccess();
   const { message, modal } = App.useApp();
   const actionRef = useRef<ActionType>(null);
 
@@ -135,51 +137,60 @@ export function UserTable() {
 
   const columns: ProColumns<User>[] = useMemo(
     () => [
-      { title: t('common.username'), dataIndex: 'username', width: 150, ellipsis: true },
-      { title: t('pages.user.employeeNo'), dataIndex: 'employee_no', width: 150 },
+      { title: t('common.username'), dataIndex: 'username', width: 160, ellipsis: true },
+      { title: t('pages.user.employeeNo'), dataIndex: 'employee_no', width: 130 },
       {
         title: t('pages.user.realName'),
         dataIndex: 'real_name',
-        width: 150,
+        width: 140,
         render: (_, row) => orDash(row.real_name),
       },
       {
         title: t('pages.user.email'),
         dataIndex: 'email',
+        width: 240,
         ellipsis: true,
         render: (_, row) => orDash(row.email),
       },
       {
         title: t('common.status'),
         dataIndex: 'status',
-        width: 100,
+        width: 110,
         render: (_, row) => <UserStatusBadge status={row.status} />,
       },
       {
         title: t('common.createdAt'),
         dataIndex: 'created_at',
         valueType: 'dateTime',
-        width: 250,
+        width: 180,
       },
       {
         title: t('common.actions'),
         key: 'actions',
-        width: 250,
+        width: 220,
         fixed: 'right',
-        render: (_, row) => (
-          <Space size="small">
-            <Access perm="system:user:edit">
-              <Button type="link" size="small" className="!px-0" onClick={() => openEdit(row)}>
+        render: (_, row) => {
+          // 命令式过滤出有权限的动作，再以竖分隔符串联 —— 避免 <Access> 静默隐藏
+          // 后留下的悬空分隔线。整列读起来是一条紧凑的操作带，而非松散的链接堆。
+          const items: React.ReactNode[] = [];
+          if (can('system:user:edit')) {
+            items.push(
+              <Button key="edit" type="link" size="small" className="!px-0" onClick={() => openEdit(row)}>
                 {t('common.edit')}
-              </Button>
-            </Access>
-            <Access perm="system:user:resetPwd">
-              <Button type="link" size="small" className="!px-0" onClick={() => openReset(row)}>
+              </Button>,
+            );
+          }
+          if (can('system:user:resetPwd')) {
+            items.push(
+              <Button key="reset" type="link" size="small" className="!px-0" onClick={() => openReset(row)}>
                 {t('pages.user.resetPassword')}
-              </Button>
-            </Access>
-            <Access perm="system:user:remove">
+              </Button>,
+            );
+          }
+          if (can('system:user:remove')) {
+            items.push(
               <Button
+                key="delete"
                 type="link"
                 size="small"
                 danger
@@ -187,20 +198,35 @@ export function UserTable() {
                 onClick={() => confirmDelete(row)}
               >
                 {t('common.delete')}
-              </Button>
-            </Access>
-          </Space>
-        ),
+              </Button>,
+            );
+          }
+          if (items.length === 0) {
+            return <span className="text-text-tertiary">—</span>;
+          }
+          return (
+            <div className="flex items-center">
+              {items.map((item, i) => (
+                <Fragment key={i}>
+                  {i > 0 && <span className="mx-2 h-3.5 w-px bg-border-secondary" aria-hidden />}
+                  {item}
+                </Fragment>
+              ))}
+            </div>
+          );
+        },
       },
     ],
-    // openEdit/openReset/confirmDelete 为稳定闭包（仅调 setState/modal），t 变即重算列。
+    // openEdit/openReset/confirmDelete 为稳定闭包（仅调 setState/modal），can 为稳定
+    // store 方法引用，t 变即重算列（切语言）。
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [t],
+    [t, can],
   );
   return (
-    <div className="flex h-full min-h-0 flex-col rounded-lg bg-card-bg shadow-sm">
-      {/* 统一顶栏：筛选 + 操作，一行搞定 */}
-      <div className="shrink-0 border-b border-border-secondary px-4 py-3">
+    <div className="flex h-full min-h-0 flex-col gap-3">
+      {/* 筛选卡片 —— 独立白色浮层，与表格卡片以 gap 分隔，画布从缝隙透出（消除单卡内
+          横向色带的割裂感）。 */}
+      <div className="shrink-0 rounded-lg bg-card-bg px-4 py-3 shadow-sm">
         <UserFilterBar
           value={filters}
           onChange={setFilters}
@@ -217,8 +243,9 @@ export function UserTable() {
         />
       </div>
 
-      {/* 表格区：撑满剩余高度，无自带 toolbar */}
-      <div className="min-h-0 flex-1">
+      {/* 表格卡片 —— 独立白色浮层，撑满剩余高度，内部滚动；表头无灰底（白 + 底边框
+          + 弱化列名），靠结构而非填色区分，彻底去掉内部色带。 */}
+      <div className="min-h-0 flex-1 overflow-hidden rounded-lg bg-card-bg shadow-sm">
         <ProTable<User>
           actionRef={actionRef}
           rowKey="id"
@@ -233,7 +260,8 @@ export function UserTable() {
           pagination={{
             pageSize: 20,
             showSizeChanger: true,
-            showTotal: (t) => `共 ${t} 条`,
+            // 总数已由工具栏的实时计数承载，分页器不再重复展示，避免双份 total 噪音。
+            showTotal: undefined,
           }}
           rowSelection={{ preserveSelectedRowKeys: true }}
           tableAlertOptionRender={({ selectedRowKeys, onCleanSelected }) => (

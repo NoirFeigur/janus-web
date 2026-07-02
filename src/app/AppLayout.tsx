@@ -18,8 +18,8 @@ import { useT } from '@/hooks/useT';
 
 const { Header, Sider, Content } = Layout;
 
-const SIDER_WIDTH = 200;
-const SIDER_COLLAPSED_WIDTH = 80;
+const SIDER_WIDTH = 224;
+const SIDER_COLLAPSED_WIDTH = 72;
 
 export function AppLayout() {
   const navigate = useNavigate();
@@ -82,7 +82,7 @@ export function AppLayout() {
   );
 
   const logo = (
-    <div className="janus-sider-logo flex h-12 items-center justify-center bg-nav px-4 text-white">
+    <div className="janus-sider-logo flex h-14 items-center justify-center bg-nav px-4 text-white">
       <span className="grid h-7 w-7 shrink-0 place-items-center rounded bg-white/10 text-sm font-semibold">
         J
       </span>
@@ -130,7 +130,7 @@ export function AppLayout() {
         </Sider>
       )}
       <Layout className="h-[100dvh] min-w-0 bg-page">
-        <Header className="sticky top-0 z-10 h-12 bg-header-bg p-0 leading-none shadow-sm">
+        <Header className="sticky top-0 z-10 h-14 bg-header-bg p-0 leading-none shadow-sm">
           <Navbar
             siderCollapsed={effectiveCollapsed}
             isMobile={isMobile}

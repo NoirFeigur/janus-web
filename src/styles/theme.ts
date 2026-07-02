@@ -2,43 +2,60 @@
  * AntD 5 主题 token —— Janus 视觉系统（设计规范 §2 / DESIGN.md）。
  * 三层结构：primitive（原始值）→ semantic（角色语义）→ component（组件覆盖）。
  * 颜色语义统一走 token，组件里不写裸 hex。
+ *
+ * 2025 重设计：靛蓝 #2D50C8 替代旧藏蓝、冷石墨中性阶、次要文字对比度修复、
+ * 三档深度、radius base 8。视觉真值以 DESIGN.md 为准，改色只改本文件后重跑 pnpm codegen。
  */
 import type { ThemeConfig } from 'antd';
 
-export const PRIMARY_BLUE = '#192E76';
+export const PRIMARY_BLUE = '#2D50C8';
 
 export const primitiveTokens = {
   colors: {
+    // 品牌靛蓝 —— 白字 ~7.4:1，达标 AA。hover/active 为交互态明暗档。
     primaryBlue: PRIMARY_BLUE,
-    siderNavy: '#142B70',
-    siderNavyEnd: '#17327C',
-    navyDeep: '#0F1F52',
-    // 状态色基值（Element 风格，比 antd 默认更柔和，贴合内部后台的克制基调）。
-    success: '#3B9E4E',
-    warning: '#D98A0B',
-    error: '#DC4A4A',
-    // info 复用品牌蓝 —— 与 antd colorInfo 默认对齐（信息态即品牌态）。
+    primaryHover: '#3A5DD9',
+    primaryActive: '#2543AE',
+    // primary @ 8% / 20% —— 选中行 / 激活页签 / info 底 + 选中描边（rgba 无法无损由 hex 派生，就地锚定）。
+    primarySubtle: 'rgba(45,80,200,.08)',
+    primarySubtleBorder: 'rgba(45,80,200,.20)',
+    // 侧栏 / 品牌深色面 —— 冷石墨，不再是饱和藏蓝，纯色不做渐变。
+    graphite: '#1E2230',
+    graphiteDeep: '#171B26',
+    // 状态色基值 —— 贴合冷调基底、维持双通道（点+字）。
+    success: '#2E8B57',
+    warning: '#C77A0A',
+    error: '#D23F3F',
+    // info 复用品牌靛蓝 —— 信息态即品牌态。
     info: PRIMARY_BLUE,
     // 状态浅底 / 描边 —— 徽章、Alert、Tag 的填充与边框，绝不只靠前景色区分状态。
-    successBg: '#F0F9EB',
-    successBorder: '#D8EFCC',
-    warningBg: '#FDF6EC',
-    warningBorder: '#FAE7C8',
-    errorBg: '#FEF0F0',
-    errorBorder: '#FBDADA',
-    infoBg: 'rgba(25,46,118,.06)',
-    infoBorder: 'rgba(25,46,118,.16)',
-    pageGray: '#F5F6FA',
+    successBg: '#ECF7F0',
+    successBorder: '#CBE8D5',
+    warningBg: '#FBF3E6',
+    warningBorder: '#F2DDB8',
+    errorBg: '#FBECEC',
+    errorBorder: '#F3CDCD',
+    infoBg: 'rgba(45,80,200,.08)',
+    infoBorder: 'rgba(45,80,200,.20)',
+    // 冷石墨中性阶 —— 微偏品牌 hue，让"灰"也属于品牌，而非通用灰。
+    // 两值制配色（Restrained）：白（凸起面：卡片/输入/数据行）+ 单一凹陷灰（画布 +
+    // 分段轨道）+ 靛蓝（仅动作/选中）。画布用凹陷灰，白卡才真正「浮」起来（figure-
+    // ground），而非贴在近白上糊成一片。
+    page: '#EAEDF5',
+    // 分段控件轨道等「凹陷」语义复用同一灰；不再引入第 3、4 种近白灰。
+    surfaceSunken: '#EAEDF5',
+    // 行 hover：白卡内的极浅悬停填充（比画布浅，避免与画布同色）。
+    tableRowHover: '#F4F6FA',
     white: '#FFFFFF',
-    // 中性灰阶 —— 边框/分隔/填充/文字分层的单一来源，收敛此前散落的裸 rgba。
-    border: '#E4E7ED',
-    borderSecondary: '#EEF0F4',
-    fillHover: 'rgba(0,0,0,.02)',
-    fillActive: 'rgba(0,0,0,.04)',
-    textPrimary: 'rgba(0,0,0,.88)',
-    textSecondary: 'rgba(0,0,0,.45)',
-    // tertiary：图标/占位/禁用等最弱一档;不用于正文（正文须 ≥4.5:1）。
-    textTertiary: 'rgba(0,0,0,.25)',
+    border: '#E3E6EE',
+    borderSecondary: '#EEF0F5',
+    fillHover: 'rgba(48,58,84,.04)',
+    fillActive: 'rgba(48,58,84,.07)',
+    // 文字阶 —— 冷近黑；secondary 提到 ~5.4:1 达标 AA 正文（旧值 3.5:1 不达标）。
+    textPrimary: '#1A1F2E',
+    textSecondary: '#5A6274',
+    // tertiary：图标/占位/禁用等最弱一档；不用于正文（正文须 ≥4.5:1）。
+    textTertiary: '#8A92A6',
   },
   spacing: {
     xs: 4,
@@ -50,28 +67,38 @@ export const primitiveTokens = {
     caption: 12,
     body: 14,
     title: 16,
-    kpi: 32,
+    kpi: 28,
   },
   radius: {
-    base: 6,
+    // base 卡片 8px（更当代），控件 6px。
+    control: 6,
+    card: 8,
     pill: 999,
   },
   shadow: {
-    card: '0 1px 2px rgba(0,0,0,.06)',
+    // 三档深度（DESIGN.md §5）—— 阴影带冷调 rgba(26,31,46,…)，非纯黑。
+    card: '0 1px 2px rgba(26,31,46,.06)',
+    overlay: '0 4px 12px rgba(26,31,46,.10)',
+    dialog: '0 12px 32px rgba(26,31,46,.16)',
   },
 } as const;
 
 export const semanticTokens = {
   colors: {
     primary: primitiveTokens.colors.primaryBlue,
+    primaryHover: primitiveTokens.colors.primaryHover,
+    primaryActive: primitiveTokens.colors.primaryActive,
+    primarySubtle: primitiveTokens.colors.primarySubtle,
+    primarySubtleBorder: primitiveTokens.colors.primarySubtleBorder,
     link: primitiveTokens.colors.primaryBlue,
     emphasis: primitiveTokens.colors.primaryBlue,
     success: primitiveTokens.colors.success,
     warning: primitiveTokens.colors.warning,
     error: primitiveTokens.colors.error,
     info: primitiveTokens.colors.info,
-    bgPage: primitiveTokens.colors.pageGray,
+    bgPage: primitiveTokens.colors.page,
     bgContainer: primitiveTokens.colors.white,
+    surfaceSunken: primitiveTokens.colors.surfaceSunken,
     textPrimary: primitiveTokens.colors.textPrimary,
     textSecondary: primitiveTokens.colors.textSecondary,
     textTertiary: primitiveTokens.colors.textTertiary,
@@ -79,9 +106,9 @@ export const semanticTokens = {
     borderSecondary: primitiveTokens.colors.borderSecondary,
     fillHover: primitiveTokens.colors.fillHover,
     fillActive: primitiveTokens.colors.fillActive,
-    tableRowHover: primitiveTokens.colors.pageGray,
-    // primaryBlue(#192E76 = rgb(25,46,118)) @ 8% —— rgba 无法无损由 hex 派生，故就地锚定来源。
-    tableRowSelected: 'rgba(25,46,118,.08)',
+    // 行 hover 用独立的浅悬停填充；选中行用 primary-subtle。
+    tableRowHover: primitiveTokens.colors.tableRowHover,
+    tableRowSelected: primitiveTokens.colors.primarySubtle,
   },
   // 状态语义组 —— 徽章/Tag/Alert 三档(前景/浅底/描边)统一取此，状态永不只靠颜色。
   status: {
@@ -122,12 +149,14 @@ export const semanticTokens = {
     kpi: primitiveTokens.fontSize.kpi,
   },
   radius: {
-    control: primitiveTokens.radius.base,
-    card: primitiveTokens.radius.base,
+    control: primitiveTokens.radius.control,
+    card: primitiveTokens.radius.card,
     pill: primitiveTokens.radius.pill,
   },
   shadow: {
     card: primitiveTokens.shadow.card,
+    overlay: primitiveTokens.shadow.overlay,
+    dialog: primitiveTokens.shadow.dialog,
   },
 } as const;
 
@@ -141,10 +170,16 @@ export const semanticTokens = {
  * 改色只改上面的 primitive / semantic 一处，AntD token 与 Tailwind class 同步生效。
  */
 export const brandCssVars: Readonly<Record<`--brand-${string}`, string>> = {
-  '--brand-page': primitiveTokens.colors.pageGray,
+  '--brand-page': primitiveTokens.colors.page,
+  '--brand-surface-sunken': primitiveTokens.colors.surfaceSunken,
   '--brand-primary': primitiveTokens.colors.primaryBlue,
-  '--brand-nav': primitiveTokens.colors.siderNavy,
-  '--brand-nav-deep': primitiveTokens.colors.navyDeep,
+  '--brand-primary-hover': primitiveTokens.colors.primaryHover,
+  '--brand-primary-active': primitiveTokens.colors.primaryActive,
+  '--brand-primary-subtle': primitiveTokens.colors.primarySubtle,
+  '--brand-primary-subtle-border': primitiveTokens.colors.primarySubtleBorder,
+  // 侧栏 / 品牌深色面 —— 冷石墨纯色（nav-deep 供登录品牌面用最深档）。
+  '--brand-nav': primitiveTokens.colors.graphite,
+  '--brand-nav-deep': primitiveTokens.colors.graphiteDeep,
   '--brand-header-bg': primitiveTokens.colors.white,
   '--brand-card-bg': primitiveTokens.colors.white,
   '--brand-text-primary': semanticTokens.colors.textPrimary,
@@ -178,8 +213,8 @@ export const brandCssVars: Readonly<Record<`--brand-${string}`, string>> = {
 
 export const componentTokens = {
   layout: {
-    siderBg: primitiveTokens.colors.siderNavy,
-    siderBgEnd: primitiveTokens.colors.siderNavyEnd,
+    // 侧栏冷石墨纯色（DESIGN.md §6，去饱和藏蓝渐变）。
+    siderBg: primitiveTokens.colors.graphite,
     headerBg: semanticTokens.colors.bgContainer,
     bodyBg: semanticTokens.colors.bgPage,
   },
@@ -190,19 +225,37 @@ export const componentTokens = {
     shadow: semanticTokens.shadow.card,
   },
   menu: {
-    darkItemBg: primitiveTokens.colors.siderNavy,
-    darkSubMenuItemBg: primitiveTokens.colors.siderNavy,
+    darkItemBg: primitiveTokens.colors.graphite,
+    darkSubMenuItemBg: primitiveTokens.colors.graphite,
     darkItemSelectedBg: semanticTokens.colors.primary,
   },
   table: {
     rowHoverBg: semanticTokens.colors.tableRowHover,
     rowSelectedBg: semanticTokens.colors.tableRowSelected,
+    // 表头白底（同数据行），靠底边框 + 弱化列名区分，不再用灰填充 → 彻底去掉卡内色带
+    // （DESIGN.md §8：两张浮卡 + 白表头，靠结构而非填色分层）。
+    headerBg: semanticTokens.colors.bgContainer,
+    headerColor: semanticTokens.colors.textSecondary,
+    headerSplitColor: 'transparent',
+  },
+  segmented: {
+    // 分段控件轨道用与表头同一沉降灰（收敛为单一凹陷灰，杜绝第 4 种近白灰与页面
+    // 底色打架）；选中项为白色凸起胶囊，在灰轨道上清晰浮现（macOS 风格），选中文字
+    // 用品牌墨色强调 —— 灰轨白丸的对比让「当前筛选」一眼可辨，替代原本几乎不可见的
+    // 白丸浮白轨。
+    trackBg: primitiveTokens.colors.surfaceSunken,
+    itemSelectedBg: semanticTokens.colors.bgContainer,
+    itemColor: semanticTokens.colors.textSecondary,
+    itemSelectedColor: semanticTokens.colors.primary,
+    itemHoverColor: semanticTokens.colors.textPrimary,
   },
 } as const;
 
 export const antdTheme: ThemeConfig = {
   token: {
     colorPrimary: semanticTokens.colors.primary,
+    colorPrimaryHover: semanticTokens.colors.primaryHover,
+    colorPrimaryActive: semanticTokens.colors.primaryActive,
     colorLink: semanticTokens.colors.link,
     colorSuccess: semanticTokens.colors.success,
     colorWarning: semanticTokens.colors.warning,
@@ -238,6 +291,7 @@ export const antdTheme: ThemeConfig = {
     padding: primitiveTokens.spacing.md,
     paddingMD: primitiveTokens.spacing.lg,
     boxShadow: semanticTokens.shadow.card,
+    boxShadowSecondary: semanticTokens.shadow.overlay,
   },
   components: {
     Layout: {
@@ -260,6 +314,16 @@ export const antdTheme: ThemeConfig = {
       rowHoverBg: componentTokens.table.rowHoverBg,
       rowSelectedBg: componentTokens.table.rowSelectedBg,
       rowSelectedHoverBg: componentTokens.table.rowSelectedBg,
+      headerBg: componentTokens.table.headerBg,
+      headerColor: componentTokens.table.headerColor,
+      headerSplitColor: componentTokens.table.headerSplitColor,
+    },
+    Segmented: {
+      trackBg: componentTokens.segmented.trackBg,
+      itemSelectedBg: componentTokens.segmented.itemSelectedBg,
+      itemColor: componentTokens.segmented.itemColor,
+      itemSelectedColor: componentTokens.segmented.itemSelectedColor,
+      itemHoverColor: componentTokens.segmented.itemHoverColor,
     },
   },
 };
