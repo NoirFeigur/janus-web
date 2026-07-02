@@ -24,8 +24,9 @@
   --brand-border-secondary: #EEF0F5;
   --brand-fill-hover: rgba(48,58,84,.04);
   --brand-fill-active: rgba(48,58,84,.07);
-  --brand-scrollbar-thumb: rgba(48,58,84,.10);
-  --brand-scrollbar-thumb-hover: rgba(48,58,84,.15);
+  --brand-scrollbar-thumb: rgba(48,58,84,.22);
+  --brand-scrollbar-thumb-hover: rgba(48,58,84,.34);
+  --brand-scrollbar-thumb-active: rgba(48,58,84,.46);
   --brand-table-row-hover: #F4F6FA;
   --brand-table-row-selected: rgba(45,80,200,.08);
   --brand-table-row-stripe: #FAFBFD;

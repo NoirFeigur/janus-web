@@ -27,6 +27,7 @@ import { Access } from '@/components/Access';
 import { useAccess } from '@/hooks/useAccess';
 import { useDebouncedValue } from '@/hooks/useDebouncedValue';
 import { useT } from '@/hooks/useT';
+import { useTableOverlayScrollbar } from '@/hooks/useTableOverlayScrollbar';
 import { proTableRequest } from '@/utils/proTableRequest';
 
 const EMPTY_FILTER: UserFilterState = { keyword: '', employeeNo: '', status: undefined };
@@ -46,6 +47,9 @@ export function UserTable() {
   const actionRef = useRef<ActionType>(null);
   // 表格卡片即滚动容器：sticky 表头锚到它（而非 window），保住「卡片填满高度、卡内滚动」。
   const scrollRef = useRef<HTMLDivElement>(null);
+  // 表格横向滚动条走 OverlayScrollbars（overlay + autoHide:leave）——绕开 Blink 对含 hover
+  // 子元素容器的 hover-reveal 缺陷，见 useTableOverlayScrollbar。
+  useTableOverlayScrollbar(scrollRef);
 
   const [filters, setFilters] = useState<UserFilterState>(EMPTY_FILTER);
   const [loading, setLoading] = useState(false);
@@ -317,7 +321,7 @@ export function UserTable() {
           ) : null}
         </div>
 
-        <div ref={scrollRef} className="min-h-0 flex-1 overflow-y-auto">
+        <div ref={scrollRef} className="janus-table-fill min-h-0 flex-1 overflow-y-auto">
         <ProTable<User>
           actionRef={actionRef}
           rowKey="id"

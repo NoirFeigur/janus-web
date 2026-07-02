@@ -29,6 +29,8 @@
     "antd": "^5.29.3",
     "axios": "^1.18.1",
     "dayjs": "^1.11.21",
+    "overlayscrollbars": "2.11.5",
+    "overlayscrollbars-react": "0.5.6",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "react-intl": "^7.1.14",

@@ -256,7 +256,31 @@
     background: transparent;
   }
 
-  /* 滑块静息全透明（hover-reveal），圆头；3px 透明 border 内缩使其更细、留呼吸。 */
+  /*
+   * 简单/未知滚动容器的 hover-reveal：静息透明，hover/focus 容器时浮现。
+   * 仅适用于【无可 hover 子元素】的容器（页面根、抽屉、下拉等）——这类没有子元素抢 hover
+   * 语义的问题，webkit 伪元素足够。滑块圆头，3px 透明 border 内缩使其更细、留呼吸。
+   *
+   * 【不适用于 AntD 表格】：表格体内有 tr.ant-table-row 自带 hover，会抢走容器 hover 语义，
+   * 加上 Blink「后代 hover 不重绘祖先滚动条」的缺陷（WebKit #109230），纯 CSS hover-reveal
+   * 在表格上不可靠（指针进入行区域滑块即消失）。表格改用 OverlayScrollbars（见下 .os-theme-janus）。
+   */
+  *::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  *::-webkit-scrollbar-button {
+    display: none !important;
+    width: 0;
+    height: 0;
+  }
+
+  *::-webkit-scrollbar-track,
+  *::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+
   *::-webkit-scrollbar-thumb {
     background-color: transparent;
     border: 3px solid transparent;
@@ -264,7 +288,6 @@
     border-radius: 999px;
   }
 
-  /* hover / 聚焦滚动容器 → 滑块浮现（极淡）；hover 滑块自身 → 微加深给抓握反馈。 */
   *:hover::-webkit-scrollbar-thumb,
   *:focus-within::-webkit-scrollbar-thumb {
     background-color: var(--brand-scrollbar-thumb);
@@ -274,7 +297,7 @@
     background-color: var(--brand-scrollbar-thumb-hover);
   }
 
-  /* Firefox 专属降级（Chrome 不进此分支，避免互斥污染 webkit）：thin + 淡色滑块。 */
+  /* Firefox 降级（Chrome 不进此分支，避免标准属性与 webkit 互斥污染）：thin + 淡色滑块。 */
   @supports not selector(::-webkit-scrollbar) {
     * {
       scrollbar-width: thin;
@@ -291,20 +314,6 @@
   }
 
   /*
-   * AntD 表格滚动条修正 —— 【关键】：AntD 给 .ant-table 设了自己的标准 `scrollbar-color`
-   * （rgba(0,0,0,.25) 灰 + 蓝底 track），并向下继承到 .ant-table-body。Chromium 里标准
-   * scrollbar-color 一旦非 auto 就【禁用 ::-webkit-scrollbar 伪元素】→ 表格回退系统原生条
-   * （常驻灰、带上下箭头），绕过上面全部 webkit 定制。把它复位为 auto，交还 webkit 路径，
-   * 表格滚动条即随全局规则：细、无箭头、hover 才显。
-   */
-  .ant-table-wrapper .ant-table,
-  .ant-table-wrapper .ant-table-body,
-  .ant-table-wrapper .ant-table-content {
-    scrollbar-width: auto;
-    scrollbar-color: auto;
-  }
-
-  /*
    * ProTable 用 sticky 表头（sticky={{ getContainer }} 锚到外层卡片滚动容器），
    * 不用 scroll.y —— 表头/表体保持单张表，position:sticky 钉住 thead。这从根上
    * 消除了 scroll.y 拆表带来的「幽灵滚动条列 + fixed:'right' 列错位」问题：
@@ -315,6 +324,35 @@
   .ant-pro-table .ant-pro-card-body {
     padding-block: 0 !important;
     padding-inline: 0 !important;
+  }
+
+  /*
+   * 表格撑满剩余高度（DESIGN.md §8 双浮卡）—— 行少时表格区仍填满卡片、分页器贴卡片底，
+   * 消除分页器下方大片留白；行多时链条自然超出，外层 scrollRef 照常滚动（sticky 表头不变）。
+   *
+   * 做法：从 scrollRef 到 .ant-spin-container 整条 AntD 包装链设为 flex column。
+   * 顶层 .ant-pro-table 用 min-height:100% 锚定 scrollRef 的确定高度（667px）；其下各级
+   * 不能再靠 min-height:100% 百分比传导（「由 min-height 撑出的高度」不被子级百分比视为
+   * 确定高度，链会在第二级断掉），改用 flex:1 在 flex 父内直接拉伸填满，稳定可靠。
+   * 末端 .ant-table 同样 flex:1 吃掉剩余空间，把 .ant-pagination 顶到卡片底。
+   * 行多时内容自然超出 667px，外层 scrollRef 溢出滚动，两全其美。
+   * 作用域限定 .janus-table-fill（挂在 UserTable 的 scrollRef），不波及其它 ProTable。
+   */
+  .janus-table-fill > .ant-pro-table {
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+  }
+
+  .janus-table-fill .ant-pro-card,
+  .janus-table-fill .ant-pro-card-body,
+  .janus-table-fill .ant-table-wrapper,
+  .janus-table-fill .ant-spin-nested-loading,
+  .janus-table-fill .ant-spin-container,
+  .janus-table-fill .ant-spin-container > .ant-table {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
   }
 
   .ant-pro-table .ant-table-pagination {
@@ -340,4 +378,31 @@
   .janus-rise {
     animation: none;
   }
+
+  /* 滚动条浮现的淡入过渡在减动偏好下取消（仍即时变色，reveal 逻辑不受影响）。 */
+  *::-webkit-scrollbar-thumb {
+    transition: none;
+  }
+}
+
+/*
+ * OverlayScrollbars「janus」主题 —— 表格等含 hover 子元素的滚动容器专用（见
+ * useTableOverlayScrollbar）。自绘 overlay 滑块：VS Code 式 autoHide（hover/滚动才显、
+ * 离开即隐）、真 overlay 不占槽位、无箭头。着色复用 --brand-scrollbar-* token（三档：
+ * 静息浮现 / hover 加深 / 拖拽 active），与全局 webkit 路径同源，无裸值。
+ *
+ * 【必须放在无 @layer 的裸样式区】：OverlayScrollbars 的 base CSS 是非 layered 的，
+ * 而 CSS 层叠规则里非 layered 样式优先级【高于任何 @layer】。若把本主题写进
+ * @layer components，OS 自带的 --os-handle-bg:none 会永远压过它 → 滑块拿不到颜色、
+ * 塌成 0 高、不可见。放在此处（无 layer + 文件末尾 + .os-theme-janus 特异性）方能生效。
+ */
+.os-theme-janus {
+  --os-size: 10px;
+  --os-padding-perpendicular: 2px;
+  --os-padding-axis: 2px;
+  --os-track-border-radius: 999px;
+  --os-handle-border-radius: 999px;
+  --os-handle-bg: var(--brand-scrollbar-thumb);
+  --os-handle-bg-hover: var(--brand-scrollbar-thumb-hover);
+  --os-handle-bg-active: var(--brand-scrollbar-thumb-active);
 }
