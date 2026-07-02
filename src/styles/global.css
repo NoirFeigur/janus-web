@@ -118,8 +118,13 @@
     background: transparent;
   }
 
-  .janus-sider .ant-menu-dark .ant-menu-item,
-  .janus-sider .ant-menu-dark .ant-menu-submenu-title,
+  /*
+   * 圆角胶囊仅用于展开态：折叠态(80px)下强制改宽 + 外边距会和 antd 自算的居中
+   * padding 打架，导致图标右偏 4px。折叠态交回 antd 原生全宽 + 居中，不争权。
+   * 抽屉永不折叠，照常应用。
+   */
+  .janus-sider:not(.ant-layout-sider-collapsed) .ant-menu-dark .ant-menu-item,
+  .janus-sider:not(.ant-layout-sider-collapsed) .ant-menu-dark .ant-menu-submenu-title,
   .janus-mobile-drawer .ant-menu-dark .ant-menu-item,
   .janus-mobile-drawer .ant-menu-dark .ant-menu-submenu-title {
     margin-inline: 8px;
