@@ -53,6 +53,10 @@ export function UserTable() {
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const clearSelection = () => setSelectedRowKeys([]);
 
+  // 序号列跨页连续：记录当前页/页大小，render 时用 (current-1)*pageSize + index + 1 算全局序号
+  // （非每页从 1 重来）。ref 不触发重渲染，request 里刷新即可，列 render 读到的是当页值。
+  const pageRef = useRef({ current: 1, pageSize: 20 });
+
   // 抽屉/弹窗态：单组件双模式，record=null 即新建。
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [drawerMode, setDrawerMode] = useState<'create' | 'edit'>('create');
@@ -153,7 +157,27 @@ export function UserTable() {
 
   const columns: ProColumns<User>[] = useMemo(
     () => [
-      { title: t('common.username'), dataIndex: 'username', width: 160, ellipsis: true, className: 'font-medium' },
+      {
+        title: '#',
+        key: 'index',
+        width: 64,
+        align: 'center',
+        // 跨页连续序号（非每页重置）；tertiary + tabular-nums 作弱化元信息，不与内容争视线。
+        render: (_, __, index) => (
+          <span className="text-text-tertiary tabular-nums">
+            {(pageRef.current.current - 1) * pageRef.current.pageSize + index + 1}
+          </span>
+        ),
+      },
+      {
+        title: t('common.username'),
+        dataIndex: 'username',
+        width: 160,
+        ellipsis: true,
+        // font-medium 走 onCell 只作用表体 td；若挂 className 会连表头 th 一起变 500，
+        // 反把该表头压得比其他 600 表头更细（列 className 同时命中 th + td）。
+        onCell: () => ({ className: 'font-medium' }),
+      },
       { title: t('pages.user.employeeNo'), dataIndex: 'employee_no', width: 130 },
       {
         title: t('pages.user.realName'),
@@ -304,7 +328,7 @@ export function UserTable() {
           toolbar={undefined}
           headerTitle={false}
           params={queryParams}
-          scroll={{ x: 900 }}
+          scroll={{ x: 964 }}
           sticky={{ getContainer: () => scrollRef.current ?? window }}
           pagination={{
             pageSize: 20,
@@ -331,6 +355,8 @@ export function UserTable() {
           }}
           request={async (params) => {
             setLoading(true);
+            // 记录当前页/页大小，供序号列算跨页连续序号。
+            pageRef.current = { current: params.current ?? 1, pageSize: params.pageSize ?? 20 };
             const result = await proTableRequest<User>(
               ({ limit, offset, ...rest }) =>
                 listUsers({
