@@ -14,6 +14,13 @@
 @import 'tailwindcss';
 
 /*
+ * 品牌 CSS 变量（:root { --brand-* }）—— codegen 自动生成的静态产物。
+ * 真值唯一来源是 src/styles/theme.ts；由 `pnpm codegen`（codegen:brand）派生。
+ * 下方 @theme inline 与手写规则只引用 var(--brand-*)。改色改 theme.ts 后重跑 codegen。
+ */
+@import './brand-tokens.css';
+
+/*
  * 全高链 + 正文字号 —— 归入 base 层：仅托底，绝不与 antd 组件或 utilities 争权。
  * height: 让 #root 及其下的 min-h-screen/h-full 有可依据的祖先高度（preflight 不设 height）。
  * font-size: 让裸文字（非 AntD 组件）收敛到规范正文 14px；var 与 AntD fontSize token 同源。
@@ -34,7 +41,7 @@
  *
  * inline：Tailwind 生成的 utility 直接内联 var(--brand-*) 引用，且不再向 :root 输出
  * 一份 --color-* 中间变量。品牌色「真值」的唯一来源是 src/styles/theme.ts，
- * 运行时由 main.tsx 注入 :root { --brand-* }（见该文件）。此处零字面量、零重复。
+ * 经 codegen 派生进上方 @import 的 brand-tokens.css（:root）。此处零字面量、零重复。
  */
 @theme inline {
   --color-page: var(--brand-page);

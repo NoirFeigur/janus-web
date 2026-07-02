@@ -1,0 +1,20 @@
+/**
+ * 品牌 CSS 变量 —— 【codegen 自动生成，请勿手改】。
+ *
+ * 由 `pnpm codegen`（codegen:brand）从 src/styles/theme.ts 的 brandCssVars 生成。
+ * 品牌色真值唯一来源是 theme.ts（primitive / semantic token 派生）；此文件是派生产物。
+ * 要改品牌色：改 theme.ts 后重跑 `pnpm codegen`。
+ */
+:root {
+  --brand-page: #F5F6FA;
+  --brand-primary: #192E76;
+  --brand-nav: #142B70;
+  --brand-nav-deep: #0F1F52;
+  --brand-header-bg: #FFFFFF;
+  --brand-card-bg: #FFFFFF;
+  --brand-text-primary: rgba(0,0,0,.88);
+  --brand-text-secondary: rgba(0,0,0,.45);
+  --brand-table-row-hover: #F5F6FA;
+  --brand-table-row-selected: rgba(25,46,118,.08);
+  --brand-font-base: 14px;
+}

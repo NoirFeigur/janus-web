@@ -15,9 +15,10 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "codegen": "pnpm codegen:enums && pnpm codegen:api",
+    "codegen": "pnpm codegen:enums && pnpm codegen:api && pnpm codegen:brand",
     "codegen:enums": "node scripts/codegen-enums.mjs",
-    "codegen:api": "node scripts/codegen-api.mjs"
+    "codegen:api": "node scripts/codegen-api.mjs",
+    "codegen:brand": "node scripts/codegen-brand-css.mjs"
   },
   "dependencies": {
     "@ant-design/cssinjs": "^1.23.0",
