@@ -191,9 +191,11 @@ Selected state is always a **filled pill** — sider item, active TagsView tab, 
 Every feature table inherits this. Details in §8.
 
 ### TagsView
-- **Structure**: horizontally scrollable tab strip below the header, on the sunken surface.
-- **States**: active tab = filled pill (`--color-primary-subtle` + brand text); inactive quiet, gains fill on hover.
-- **Motion**: color/background/close-affordance transitions only.
+- **Structure**: horizontally scrollable tab strip below the header, on the sunken surface. Each tab is an `h-7` pill (`rounded-md`, symmetric `px-3`), content **center-aligned** so the label sits centered at rest.
+- **States**: active tab = filled pill (`--color-primary-subtle` + brand text + `1px` inset ring in `--color-primary-subtle-border`); inactive quiet (`text-secondary`), gains `--color-table-row-hover` fill + brand text on hover.
+- **Close affordance**: the `×` is a `16px` round hit target that is **width-collapsed** (`w-0`, `overflow-hidden`, transparent) at rest — it reserves no space, so the label stays truly centered. Hovering the tab **expands** it (`w-0`→`w-4` + `4px` gap) and fades it in to `0.7`; label and `×` re-center together as a group. Hovering the `×` itself brings full opacity + a subtle fill and `1.1×` scale. Non-closable tabs (Home) render no `×`.
+- **Motion**: `transition-all 150ms ease-out` (§7 micro) drives fill/text/ring, the close-affordance width+fade expansion, and an `active:scale-[0.97]` press. Reduced-motion disables the transition and press-scale.
+- **Cursor**: explicit `cursor-pointer` on the tab (native `<button>` defaults to arrow under the Tailwind preflight).
 
 ### Login
 - **Structure**: responsive split panel — graphite brand panel from `lg`, compact brand lockup below.

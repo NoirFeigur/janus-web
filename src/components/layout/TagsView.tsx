@@ -136,10 +136,10 @@ export function TagsView({ menuTree }: TagsViewProps) {
   ];
 
   return (
-    <div className="h-10 border-b border-table-row-hover bg-card-bg px-2">
+    <div className="h-10 border-b border-border-secondary bg-card-bg px-2">
       <div
         ref={scrollRef}
-        className="janus-tags-scroll flex h-full gap-2 overflow-x-auto overflow-y-hidden"
+        className="janus-tags-scroll flex h-full items-center gap-1 overflow-x-auto overflow-y-hidden"
         onWheel={onWheel}
       >
         {visitedTabs.map((tab) => {
@@ -150,25 +150,41 @@ export function TagsView({ menuTree }: TagsViewProps) {
               trigger={['contextMenu']}
               menu={{ items: buildMenuItems(tab.path, tab.closable) }}
             >
+              {/* group：叉在 hover 整枚 tab 时才「撑开」（w-0→w-4 折叠宽度，非原地淡入），
+                  连带文字作为一组重新居中。justify-center + 对称 px-3 保证静息态文字真居中。
+                  transition-all + 150ms ease-out（§7 micro）串起底色/文字/描边/按压缩放/叉展开；
+                  cursor-pointer 明确可点（原生 button 在 preflight 下是箭头）。 */}
               <button
                 type="button"
                 className={[
-                  'my-1 flex h-8 shrink-0 items-center gap-2 rounded px-3 text-sm transition-colors',
+                  'group relative my-1.5 flex h-7 shrink-0 cursor-pointer items-center justify-center rounded-md px-3 text-sm',
+                  'transition-all duration-150 ease-out active:scale-[0.97]',
+                  'motion-reduce:transition-none motion-reduce:active:scale-100',
                   active
-                    ? 'bg-table-row-selected text-primary ring-1 ring-inset ring-primary/[0.12]'
-                    : 'bg-card-bg text-text-secondary hover:bg-table-row-hover hover:text-primary',
+                    ? 'bg-primary-subtle text-primary ring-1 ring-inset ring-primary-subtle-border'
+                    : 'text-text-secondary hover:bg-table-row-hover hover:text-primary',
                 ].join(' ')}
                 onClick={() => void navigate(tab.path)}
               >
-                <span>{t(tab.title)}</span>
+                <span className="leading-none">{t(tab.title)}</span>
                 {tab.closable ? (
-                  <CloseOutlined
-                    className="rounded p-0.5 text-xs opacity-70 transition-opacity hover:bg-white/70 hover:opacity-100"
+                  // 叉：静息 w-0/ml-0/透明且 overflow-hidden 收起（不占位，文字得以居中）；
+                  // hover 整枚 tab 时撑开为 16×16 圆形命中区 + 4px 间隙并淡入；hover 叉自身现底色 + 放大。
+                  <span
+                    aria-label={t('common.tab.close')}
+                    className={[
+                      'flex h-4 w-0 shrink-0 items-center justify-center overflow-hidden rounded-full text-[10px] leading-none opacity-0',
+                      'transition-all duration-150 ease-out',
+                      'group-hover:ml-1 group-hover:w-4 group-hover:opacity-70',
+                      'hover:scale-110 hover:bg-primary/15 hover:!opacity-100',
+                    ].join(' ')}
                     onClick={(event) => {
                       event.stopPropagation();
                       closeTab(tab.path);
                     }}
-                  />
+                  >
+                    <CloseOutlined />
+                  </span>
                 ) : null}
               </button>
             </Dropdown>
