@@ -37,7 +37,6 @@ export function UserFilterBar({
   value,
   onChange,
   onReset,
-  total,
   loading,
   actions,
 }: UserFilterBarProps) {
@@ -80,7 +79,6 @@ export function UserFilterBar({
       )}
 
       <div className="ml-auto flex items-center gap-3">
-        <span className="text-sm text-text-tertiary">{t('pages.user.totalCount', { total })}</span>
         {actions}
       </div>
     </div>
