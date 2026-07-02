@@ -226,12 +226,82 @@
     background: var(--brand-table-row-selected);
   }
 
+  /*
+   * 全局滚动条（DESIGN.md §Scrollbar）—— 细、无箭头按钮、圆头、hover 才显、贴合冷石墨主题。
+   *
+   * 【关键陷阱，前两版栽在这】：Chromium 里 `scrollbar-width`/`scrollbar-color`（标准属性）
+   * 与 `::-webkit-scrollbar`（旧伪元素）【互斥】—— 一旦对 `*` 设了 `scrollbar-width`，Chrome
+   * 会【忽略全部 webkit 伪元素规则】并回退到系统原生滚动条（Windows 上即：常驻灰条 + 上下箭头）。
+   * 故此处【只用 webkit 伪元素】，标准属性用 `@supports not selector(::-webkit-scrollbar)`
+   * 隔离给 Firefox，绝不落到 Chrome 上污染 webkit 路径。
+   *
+   * hover-reveal：滑块静息【全透明】，仅当鼠标悬停（或键盘聚焦）其所在滚动容器时浮现；
+   * track 亦透明 —— 预留槽里露出的是容器背景，无灰色轨道轮廓。目标浏览器为内网 Windows Chrome。
+   */
+  *::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  /* 上下 / 左右箭头按钮：去掉（Windows Chrome 关键项）。 */
+  *::-webkit-scrollbar-button {
+    display: none !important;
+    width: 0;
+    height: 0;
+  }
+
+  /* track 透明 → 预留槽露出容器底色，无灰轨轮廓。 */
+  *::-webkit-scrollbar-track,
+  *::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+
+  /* 滑块静息全透明（hover-reveal），圆头；3px 透明 border 内缩使其更细、留呼吸。 */
+  *::-webkit-scrollbar-thumb {
+    background-color: transparent;
+    border: 3px solid transparent;
+    background-clip: padding-box;
+    border-radius: 999px;
+  }
+
+  /* hover / 聚焦滚动容器 → 滑块浮现（极淡）；hover 滑块自身 → 微加深给抓握反馈。 */
+  *:hover::-webkit-scrollbar-thumb,
+  *:focus-within::-webkit-scrollbar-thumb {
+    background-color: var(--brand-scrollbar-thumb);
+  }
+
+  *::-webkit-scrollbar-thumb:hover {
+    background-color: var(--brand-scrollbar-thumb-hover);
+  }
+
+  /* Firefox 专属降级（Chrome 不进此分支，避免互斥污染 webkit）：thin + 淡色滑块。 */
+  @supports not selector(::-webkit-scrollbar) {
+    * {
+      scrollbar-width: thin;
+      scrollbar-color: var(--brand-scrollbar-thumb) transparent;
+    }
+  }
+
   .janus-tags-scroll {
     scrollbar-width: none;
   }
 
   .janus-tags-scroll::-webkit-scrollbar {
     display: none;
+  }
+
+  /*
+   * AntD 表格滚动条修正 —— 【关键】：AntD 给 .ant-table 设了自己的标准 `scrollbar-color`
+   * （rgba(0,0,0,.25) 灰 + 蓝底 track），并向下继承到 .ant-table-body。Chromium 里标准
+   * scrollbar-color 一旦非 auto 就【禁用 ::-webkit-scrollbar 伪元素】→ 表格回退系统原生条
+   * （常驻灰、带上下箭头），绕过上面全部 webkit 定制。把它复位为 auto，交还 webkit 路径，
+   * 表格滚动条即随全局规则：细、无箭头、hover 才显。
+   */
+  .ant-table-wrapper .ant-table,
+  .ant-table-wrapper .ant-table-body,
+  .ant-table-wrapper .ant-table-content {
+    scrollbar-width: auto;
+    scrollbar-color: auto;
   }
 
   /*

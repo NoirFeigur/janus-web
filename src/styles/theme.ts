@@ -54,6 +54,12 @@ export const primitiveTokens = {
     borderSecondary: '#EEF0F5',
     fillHover: 'rgba(48,58,84,.04)',
     fillActive: 'rgba(48,58,84,.07)',
+    // 滚动条滑块 —— 同冷石墨中性叠层。Chromium 里标准 scrollbar-width 与 ::-webkit-scrollbar
+    // 互斥（设前者会让 Chrome 忽略后者、回退系统原生条），故全局只用 webkit 伪元素、标准属性
+    // 用 @supports 隔离给 Firefox（详见 global.css）。hover-reveal：静息透明，hover 容器才现。
+    // 极淡克制：.10 为 hover 容器时的滑块色，.15 为 hover 滑块自身（比系统原生灰淡得多）。
+    scrollbarThumb: 'rgba(48,58,84,.10)',
+    scrollbarThumbHover: 'rgba(48,58,84,.15)',
     // 文字阶 —— 冷近黑；secondary 提到 ~5.4:1 达标 AA 正文（旧值 3.5:1 不达标）。
     textPrimary: '#1A1F2E',
     textSecondary: '#5A6274',
@@ -109,6 +115,8 @@ export const semanticTokens = {
     borderSecondary: primitiveTokens.colors.borderSecondary,
     fillHover: primitiveTokens.colors.fillHover,
     fillActive: primitiveTokens.colors.fillActive,
+    scrollbarThumb: primitiveTokens.colors.scrollbarThumb,
+    scrollbarThumbHover: primitiveTokens.colors.scrollbarThumbHover,
     // 行 hover 用独立的浅悬停填充；选中行用 primary-subtle。
     tableRowHover: primitiveTokens.colors.tableRowHover,
     tableRowSelected: primitiveTokens.colors.primarySubtle,
@@ -193,6 +201,8 @@ export const brandCssVars: Readonly<Record<`--brand-${string}`, string>> = {
   '--brand-border-secondary': semanticTokens.colors.borderSecondary,
   '--brand-fill-hover': semanticTokens.colors.fillHover,
   '--brand-fill-active': semanticTokens.colors.fillActive,
+  '--brand-scrollbar-thumb': semanticTokens.colors.scrollbarThumb,
+  '--brand-scrollbar-thumb-hover': semanticTokens.colors.scrollbarThumbHover,
   '--brand-table-row-hover': semanticTokens.colors.tableRowHover,
   '--brand-table-row-selected': semanticTokens.colors.tableRowSelected,
   '--brand-table-row-stripe': semanticTokens.colors.tableRowStripe,
