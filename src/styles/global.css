@@ -188,6 +188,44 @@
     font-feature-settings: 'tnum';
   }
 
+  /*
+   * 表头列名：白底靠字重 + 微字距 + 弱墨立住（DESIGN.md §8），而非灰填充。
+   * 修「白表头/白行/近白画布三层糊成一片」——结构与字重分层，不加色带。
+   */
+  .ant-pro-table .ant-table-thead > tr > th {
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+
+  /*
+   * 斑马纹（DESIGN.md §8）：偶数数据行极浅冷底，为长表提供行锚。按 rowClassName
+   * 打标（janus-row-stripe）而非 CSS nth-child —— scroll.x 插入的隐藏 measure-row
+   * 会令 nth-child 奇偶错位。最弱一档，hover / selected 必须压过它（见下）。
+   */
+  .ant-pro-table .ant-table-tbody > tr.janus-row-stripe > td {
+    background: var(--brand-table-row-stripe);
+  }
+
+  /*
+   * 行 hover 反馈 + 150ms 过渡（DESIGN.md §7 micro motion）：指哪亮哪。
+   * 显式覆盖斑马纹（含 janus-row-stripe）。选中态优先级更高，见下。
+   */
+  .ant-pro-table .ant-table-tbody > tr > td {
+    transition: background-color 150ms ease-out;
+  }
+
+  .ant-pro-table .ant-table-tbody > tr:hover > td,
+  .ant-pro-table .ant-table-tbody > tr.janus-row-stripe:hover > td {
+    background: var(--brand-table-row-hover);
+  }
+
+  /* 选中行：品牌浅底压过斑马纹与 hover（DESIGN.md §8 行选中语言）。 */
+  .ant-pro-table .ant-table-tbody > tr.ant-table-row-selected > td,
+  .ant-pro-table .ant-table-tbody > tr.ant-table-row-selected:hover > td,
+  .ant-pro-table .ant-table-tbody > tr.ant-table-row-selected.janus-row-stripe > td {
+    background: var(--brand-table-row-selected);
+  }
+
   .janus-tags-scroll {
     scrollbar-width: none;
   }
@@ -210,7 +248,10 @@
   }
 
   .ant-pro-table .ant-table-pagination {
-    margin: 12px 16px !important;
+    /* 顶边框把分页条与表体分层（DESIGN.md §5 flat border 分隔），padding 增高留白。 */
+    margin: 0 !important;
+    padding: 12px 16px;
+    border-top: 1px solid var(--brand-border-secondary);
   }
 
   /* 当 options={false} + headerTitle={false} 时，ProTable 仍可能渲染空 toolbar 容器 */

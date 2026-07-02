@@ -46,6 +46,9 @@ export const primitiveTokens = {
     surfaceSunken: '#EAEDF5',
     // 行 hover：白卡内的极浅悬停填充（比画布浅，避免与画布同色）。
     tableRowHover: '#F4F6FA',
+    // 斑马纹：偶数行的极浅冷调填充。介于纯白(奇数行)与 hover 之间的最弱一档，
+    // 仅为长表扫读提供行锚，不打破「白为凸起面」的两值语言（差值 <2%，hover 仍能压过）。
+    tableRowStripe: '#FAFBFD',
     white: '#FFFFFF',
     border: '#E3E6EE',
     borderSecondary: '#EEF0F5',
@@ -109,6 +112,7 @@ export const semanticTokens = {
     // 行 hover 用独立的浅悬停填充；选中行用 primary-subtle。
     tableRowHover: primitiveTokens.colors.tableRowHover,
     tableRowSelected: primitiveTokens.colors.primarySubtle,
+    tableRowStripe: primitiveTokens.colors.tableRowStripe,
   },
   // 状态语义组 —— 徽章/Tag/Alert 三档(前景/浅底/描边)统一取此，状态永不只靠颜色。
   status: {
@@ -191,6 +195,7 @@ export const brandCssVars: Readonly<Record<`--brand-${string}`, string>> = {
   '--brand-fill-active': semanticTokens.colors.fillActive,
   '--brand-table-row-hover': semanticTokens.colors.tableRowHover,
   '--brand-table-row-selected': semanticTokens.colors.tableRowSelected,
+  '--brand-table-row-stripe': semanticTokens.colors.tableRowStripe,
   // 状态色 —— 徽章/Tag 的前景 + 浅底 + 描边三档。
   '--brand-success': semanticTokens.status.success.base,
   '--brand-success-bg': semanticTokens.status.success.bg,
@@ -237,6 +242,9 @@ export const componentTokens = {
     headerBg: semanticTokens.colors.bgContainer,
     headerColor: semanticTokens.colors.textSecondary,
     headerSplitColor: 'transparent',
+    // 行高呼吸感（DESIGN.md §4 rhythm）：middle 密度下把纵向内边距从默认 12 提到 14，
+    // 数据密集但不逼仄；斑马纹 + hover 由 global.css 承载（AntD 无 stripe token）。
+    cellPaddingBlock: 14,
   },
   segmented: {
     // 分段控件轨道用与表头同一沉降灰（收敛为单一凹陷灰，杜绝第 4 种近白灰与页面
@@ -317,6 +325,7 @@ export const antdTheme: ThemeConfig = {
       headerBg: componentTokens.table.headerBg,
       headerColor: componentTokens.table.headerColor,
       headerSplitColor: componentTokens.table.headerSplitColor,
+      cellPaddingBlock: componentTokens.table.cellPaddingBlock,
     },
     Segmented: {
       trackBg: componentTokens.segmented.trackBg,

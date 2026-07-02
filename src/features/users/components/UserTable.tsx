@@ -62,14 +62,22 @@ export function UserTable() {
   const debouncedKeyword = useDebouncedValue(filters.keyword);
   const debouncedEmployeeNo = useDebouncedValue(filters.employeeNo);
 
-  // params 变化触发 ProTable 重取（承载筛选态 → 请求）。
+  // 回车即查：递增 nonce 强制 queryParams 立即用当前原始输入重算（跳过防抖等待）。
+  const [submitNonce, setSubmitNonce] = useState(0);
+  const handleSubmit = () => setSubmitNonce((n) => n + 1);
+
+  // params 变化触发 ProTable 重取（承载筛选态 → 请求）。防抖值 settle 或提交 nonce
+  // 变更时重算；提交路径读原始 filters 立即生效，日常输入仍走防抖。
   const queryParams = useMemo(
     () => ({
-      keyword: debouncedKeyword.trim() || undefined,
-      employee_no: debouncedEmployeeNo.trim() || undefined,
+      keyword: filters.keyword.trim() || undefined,
+      employee_no: filters.employeeNo.trim() || undefined,
       status: filters.status,
     }),
-    [debouncedKeyword, debouncedEmployeeNo, filters.status],
+    // 依赖用防抖值 + nonce：日常输入靠防抖节流触发；回车靠 nonce 立即触发。
+    // 读取用原始 filters，保证提交时拿到最新值而非滞后的防抖值。
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [debouncedKeyword, debouncedEmployeeNo, filters.status, submitNonce],
   );
 
   const hasFilter =
@@ -139,7 +147,7 @@ export function UserTable() {
 
   const columns: ProColumns<User>[] = useMemo(
     () => [
-      { title: t('common.username'), dataIndex: 'username', width: 160, ellipsis: true },
+      { title: t('common.username'), dataIndex: 'username', width: 160, ellipsis: true, className: 'font-medium' },
       { title: t('pages.user.employeeNo'), dataIndex: 'employee_no', width: 130 },
       {
         title: t('pages.user.realName'),
@@ -233,6 +241,7 @@ export function UserTable() {
           value={filters}
           onChange={setFilters}
           onReset={handleReset}
+          onSubmit={handleSubmit}
           total={total}
           loading={loading}
           actions={
@@ -267,10 +276,16 @@ export function UserTable() {
           pagination={{
             pageSize: 20,
             showSizeChanger: true,
+            // 大数据集直接跳档（便捷）；深翻页用快速跳页免逐页点。
+            pageSizeOptions: [10, 20, 50, 100],
+            showQuickJumper: true,
             // 总数已由工具栏的实时计数承载，分页器不再重复展示，避免双份 total 噪音。
             showTotal: undefined,
           }}
           rowSelection={{ preserveSelectedRowKeys: true }}
+          // 斑马纹按数据 index 打标（偶数行），而非 CSS nth-child —— scroll.x 会插入
+          // 隐藏的 .ant-table-measure-row 作为首个 tr，令 nth-child 奇偶错位。index 免疫。
+          rowClassName={(_, index) => (index % 2 === 1 ? 'janus-row-stripe' : '')}
           tableAlertOptionRender={({ selectedRowKeys, onCleanSelected }) => (
             <div className="flex items-center gap-3">
               <Access perm="system:user:remove">
