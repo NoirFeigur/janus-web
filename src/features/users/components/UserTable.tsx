@@ -41,6 +41,8 @@ export function UserTable() {
   const can = useAccess();
   const { message, modal } = App.useApp();
   const actionRef = useRef<ActionType>(null);
+  // 表格卡片即滚动容器：sticky 表头锚到它（而非 window），保住「卡片填满高度、卡内滚动」。
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   const [filters, setFilters] = useState<UserFilterState>(EMPTY_FILTER);
   const [total, setTotal] = useState(0);
@@ -243,9 +245,13 @@ export function UserTable() {
         />
       </div>
 
-      {/* 表格卡片 —— 独立白色浮层，撑满剩余高度，内部滚动；表头无灰底（白 + 底边框
-          + 弱化列名），靠结构而非填色区分，彻底去掉内部色带。 */}
-      <div className="min-h-0 flex-1 overflow-hidden rounded-lg bg-card-bg shadow-sm">
+      {/* 表格卡片 —— 独立白色浮层，撑满剩余高度，自身即滚动容器；sticky 表头锚到此
+          div 而非 window（见 scrollRef），保住卡内滚动的双浮卡语义。表头无灰底（白 +
+          底边框 + 弱化列名），靠结构而非填色区分，彻底去掉内部色带。 */}
+      <div
+        ref={scrollRef}
+        className="min-h-0 flex-1 overflow-y-auto rounded-lg bg-card-bg shadow-sm"
+      >
         <ProTable<User>
           actionRef={actionRef}
           rowKey="id"
@@ -256,7 +262,8 @@ export function UserTable() {
           toolbar={undefined}
           headerTitle={false}
           params={queryParams}
-          scroll={{ x: 900, y: 9999 }}
+          scroll={{ x: 900 }}
+          sticky={{ getContainer: () => scrollRef.current ?? window }}
           pagination={{
             pageSize: 20,
             showSizeChanger: true,

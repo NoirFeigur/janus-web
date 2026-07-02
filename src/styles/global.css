@@ -197,74 +197,19 @@
   }
 
   /*
-   * ProTable 撑满容器高度 —— 全局生效，所有 ProTable 自动继承。
-   * 整条 flex 链：pro-table → pro-card → card-body → table-wrapper → spin → table → body，
-   * 表体内滚，表头固定，分页器钉底。
+   * ProTable 用 sticky 表头（sticky={{ getContainer }} 锚到外层卡片滚动容器），
+   * 不用 scroll.y —— 表头/表体保持单张表，position:sticky 钉住 thead。这从根上
+   * 消除了 scroll.y 拆表带来的「幽灵滚动条列 + fixed:'right' 列错位」问题：
+   * 单表下表头列与表体列共用同一套 colgroup，天然对齐，且无需常驻空滚动条占位。
+   * 滚动语义：卡片(.ant-table-wrapper 外层 div)整体滚动，表头粘顶、分页器随内容走。
+   * 故这里不再需要那条 pro-card → body 的 flex 撑满链。
    */
-  .ant-pro-table {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .ant-pro-table .ant-pro-card {
-    flex: 1;
-    min-height: 0;
-    display: flex;
-    flex-direction: column;
-  }
-
   .ant-pro-table .ant-pro-card-body {
-    flex: 1;
-    min-height: 0;
-    display: flex;
-    flex-direction: column;
     padding-block: 0 !important;
     padding-inline: 0 !important;
   }
 
-  .ant-pro-table .ant-table-wrapper {
-    flex: 1;
-    min-height: 0;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .ant-pro-table .ant-spin-nested-loading,
-  .ant-pro-table .ant-spin-container {
-    flex: 1;
-    min-height: 0;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .ant-pro-table .ant-table {
-    flex: 1;
-    min-height: 0;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .ant-pro-table .ant-table-container {
-    flex: 1;
-    min-height: 0;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .ant-pro-table .ant-table-header {
-    flex-shrink: 0;
-  }
-
-  .ant-pro-table .ant-table-body {
-    flex: 1;
-    min-height: 0;
-    max-height: none !important;
-    overflow-y: auto !important;
-  }
-
   .ant-pro-table .ant-table-pagination {
-    flex-shrink: 0;
     margin: 12px 16px !important;
   }
 
