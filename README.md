@@ -195,7 +195,7 @@ features/<m>/api/*.queries.ts ← queryOptions + key 工厂
 
 - **AntD 组件外观走 token**：颜色/圆角/组件级样式改 `ConfigProvider` theme（`src/styles/theme.ts`），**不要**用 Tailwind 去覆盖 AntD 组件内部类名。
 - **Tailwind 管「组件之间」**：布局（flex/grid）、间距、对齐、尺寸、一次性微调——**取代内联 `style={{}}`**。原来 `style={{ marginTop: 16 }}` 一律改 `className="mt-4"`。
-- **裸 hex 收口**：品牌色映射进 `@theme`（`--color-laplace` 等），用 `bg-laplace` / `text-laplace`，不在 JSX 里写 `#192E76`。
+- **裸 hex 收口**：品牌色经 `src/styles/theme.ts` 单一真值 → `pnpm codegen` 派生 `--brand-*`，`global.css` `@theme inline` 映射为 `--color-*` 工具类。JSX 里用 `bg-primary` / `text-primary` / `bg-page` 等语义 class，**不写裸 hex**。完整 token 表与视觉规范见 [`DESIGN.md`](DESIGN.md)。
 
 **AntD 5 + Tailwind 4 共存（关键，否则 AntD 组件样式被打乱）**：
 
@@ -203,7 +203,7 @@ features/<m>/api/*.queries.ts ← queryOptions + key 工厂
 
    ```css
    /* src/styles/global.css */
-   @layer theme, base, antd, components, utilities;
+   @layer theme, base, antd, antd-pro, components, utilities;
    @import 'tailwindcss';
    ```
 
