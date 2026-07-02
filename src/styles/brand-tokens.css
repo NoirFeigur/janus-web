@@ -14,7 +14,25 @@
   --brand-card-bg: #FFFFFF;
   --brand-text-primary: rgba(0,0,0,.88);
   --brand-text-secondary: rgba(0,0,0,.45);
+  --brand-text-tertiary: rgba(0,0,0,.25);
+  --brand-border: #E4E7ED;
+  --brand-border-secondary: #EEF0F4;
+  --brand-fill-hover: rgba(0,0,0,.02);
+  --brand-fill-active: rgba(0,0,0,.04);
   --brand-table-row-hover: #F5F6FA;
   --brand-table-row-selected: rgba(25,46,118,.08);
+  --brand-success: #3B9E4E;
+  --brand-success-bg: #F0F9EB;
+  --brand-success-border: #D8EFCC;
+  --brand-warning: #D98A0B;
+  --brand-warning-bg: #FDF6EC;
+  --brand-warning-border: #FAE7C8;
+  --brand-error: #DC4A4A;
+  --brand-error-bg: #FEF0F0;
+  --brand-error-border: #FBDADA;
+  --brand-info: #192E76;
+  --brand-info-bg: rgba(25,46,118,.06);
+  --brand-info-border: rgba(25,46,118,.16);
   --brand-font-base: 14px;
+  --brand-font-family: "Inter Variable", "Inter", -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
 }

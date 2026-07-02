@@ -938,6 +938,28 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/admin/users/{user_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get User Detail
+         * @description Fetch one user by id (read — gated by the same perm as list).
+         */
+        get: operations["get_user_detail_admin_users__user_id__get"];
+        /** Update User */
+        put: operations["update_user_admin_users__user_id__put"];
+        post?: never;
+        /** Delete User */
+        delete: operations["delete_user_admin_users__user_id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/admin/users/batch-delete": {
         parameters: {
             query?: never;
@@ -950,24 +972,6 @@ export interface paths {
         /** Batch Delete Users */
         post: operations["batch_delete_users_admin_users_batch_delete_post"];
         delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/admin/users/{user_id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        /** Update User */
-        put: operations["update_user_admin_users__user_id__put"];
-        post?: never;
-        /** Delete User */
-        delete: operations["delete_user_admin_users__user_id__delete"];
         options?: never;
         head?: never;
         patch?: never;
@@ -6480,6 +6484,8 @@ export interface operations {
         parameters: {
             query?: {
                 keyword?: string | null;
+                employee_no?: string | null;
+                status?: components["schemas"]["UserStatus"] | null;
                 sort_by?: string | null;
                 sort_order?: "asc" | "desc";
                 limit?: number;
@@ -6550,21 +6556,19 @@ export interface operations {
             };
         };
     };
-    batch_delete_users_admin_users_batch_delete_post: {
+    get_user_detail_admin_users__user_id__get: {
         parameters: {
             query?: never;
             header?: {
                 authorization?: string | null;
                 "X-API-Key"?: string | null;
             };
-            path?: never;
+            path: {
+                user_id: number;
+            };
             cookie?: never;
         };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["BatchIdsRequest"];
-            };
-        };
+        requestBody?: never;
         responses: {
             /** @description Successful Response */
             200: {
@@ -6572,7 +6576,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["SuccessEnvelope_BatchResult_"];
+                    "application/json": components["schemas"]["SuccessEnvelope_UserRead_"];
                 };
             };
             /** @description Validation Error */
@@ -6645,6 +6649,42 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["SuccessEnvelope_NoneType_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    batch_delete_users_admin_users_batch_delete_post: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+                "X-API-Key"?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BatchIdsRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SuccessEnvelope_BatchResult_"];
                 };
             };
             /** @description Validation Error */

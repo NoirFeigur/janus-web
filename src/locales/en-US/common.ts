@@ -8,6 +8,7 @@ const common: Record<string, string> = {
   'common.confirm': 'Confirm',
   'common.search': 'Search',
   'common.reset': 'Reset',
+  'common.all': 'All',
   'common.refresh': 'Refresh',
   'common.language': 'Language',
   'common.nav.open': 'Open navigation',

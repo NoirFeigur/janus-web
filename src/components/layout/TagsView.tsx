@@ -136,7 +136,7 @@ export function TagsView({ menuTree }: TagsViewProps) {
   ];
 
   return (
-    <div className="h-10 border-b border-table-row-hover bg-card-bg px-2 shadow-[0_1px_0_rgba(0,0,0,0.02)]">
+    <div className="h-10 border-b border-table-row-hover bg-card-bg px-2">
       <div
         ref={scrollRef}
         className="janus-tags-scroll flex h-full gap-2 overflow-x-auto overflow-y-hidden"
@@ -151,7 +151,7 @@ export function TagsView({ menuTree }: TagsViewProps) {
                 className={[
                   'my-1 flex h-8 shrink-0 items-center gap-2 rounded px-3 text-sm transition-colors',
                   active
-                    ? 'bg-table-row-selected text-primary shadow-[inset_0_0_0_1px_rgba(25,46,118,0.12)]'
+                    ? 'bg-table-row-selected text-primary ring-1 ring-inset ring-primary/[0.12]'
                     : 'bg-card-bg text-text-secondary hover:bg-table-row-hover hover:text-primary',
                 ].join(' ')}
                 onClick={() => void navigate(tab.path)}

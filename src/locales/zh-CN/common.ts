@@ -9,6 +9,7 @@ const common: Record<string, string> = {
   'common.confirm': '确认',
   'common.search': '查询',
   'common.reset': '重置',
+  'common.all': '全部',
   'common.refresh': '刷新',
   'common.language': '语言',
   'common.nav.open': '打开导航',

@@ -32,6 +32,7 @@
     height: 100%;
   }
   body {
+    font-family: var(--brand-font-family);
     font-size: var(--brand-font-base);
   }
 }
@@ -52,8 +53,25 @@
   --color-card-bg: var(--brand-card-bg);
   --color-text-primary: var(--brand-text-primary);
   --color-text-secondary: var(--brand-text-secondary);
+  --color-text-tertiary: var(--brand-text-tertiary);
+  --color-border: var(--brand-border);
+  --color-border-secondary: var(--brand-border-secondary);
+  --color-fill-hover: var(--brand-fill-hover);
+  --color-fill-active: var(--brand-fill-active);
   --color-table-row-hover: var(--brand-table-row-hover);
   --color-table-row-selected: var(--brand-table-row-selected);
+  --color-success: var(--brand-success);
+  --color-success-bg: var(--brand-success-bg);
+  --color-success-border: var(--brand-success-border);
+  --color-warning: var(--brand-warning);
+  --color-warning-bg: var(--brand-warning-bg);
+  --color-warning-border: var(--brand-warning-border);
+  --color-error: var(--brand-error);
+  --color-error-bg: var(--brand-error-bg);
+  --color-error-border: var(--brand-error-border);
+  --color-info: var(--brand-info);
+  --color-info-bg: var(--brand-info-bg);
+  --color-info-border: var(--brand-info-border);
 }
 
 /* 登录页动效 —— 表单入场（增强已可见的默认态，非隐藏后再显）+ 门户环缓旋。 */
@@ -169,6 +187,16 @@
   .janus-page .ant-pro-card,
   .janus-page .ant-card {
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+  }
+
+  /*
+   * 表格数字对齐 —— 表体统一启用 tabular-nums(等宽数字),数字/日期/ID 列在行间
+   * 垂直对齐、不再抖动跳位。Inter 可变字体支持此特性,是数据后台的可读性刚需。
+   */
+  .ant-table-tbody,
+  .ant-pro-table .ant-table-tbody {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: 'tnum';
   }
 
   .janus-tags-scroll {

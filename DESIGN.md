@@ -2,7 +2,7 @@
 
 ## 1. Atmosphere & Identity
 
-Janus is a restrained internal command center: dense, legible, and calm under repeated use. Its signature is Laplace navy framing a light operational workspace, with depth expressed through subtle shadows, tonal page backgrounds, and clear selected states rather than decoration.
+Janus is a restrained internal command center: dense, legible, and calm under repeated use. Its signature is brand navy framing a light operational workspace, with depth expressed through subtle shadows, tonal page backgrounds, and clear selected states rather than decoration.
 
 ## 2. Color
 
@@ -12,18 +12,47 @@ Janus is a restrained internal command center: dense, legible, and calm under re
 |------|-------|-------|-------|
 | Page surface | `--color-page` / `colorBgLayout` | `#F5F6FA` | App background and table hover surface |
 | Container surface | `--color-card-bg` / `colorBgContainer` | `#FFFFFF` | Cards, header, page containers |
-| Brand primary | `--color-laplace` / `colorPrimary` | `#192E76` | Primary actions, selected state, links |
-| Sider surface | `--color-laplace-sider` / `Layout.siderBg` | `#142B70` | Main navigation background |
-| Deep brand surface | `--color-laplace-deep` | `#0F1F52` | Login brand panel and deepest navigation tone |
+| Brand primary | `--color-primary` / `colorPrimary` | `#192E76` | Primary actions, selected state, links |
+| Nav surface | `--color-nav` / `Layout.siderBg` | `#142B70` | Main navigation background |
+| Deep brand surface | `--color-nav-deep` | `#0F1F52` | Login brand panel and deepest navigation tone |
 | Header surface | `--color-header-bg` / `Layout.headerBg` | `#FFFFFF` | Sticky app header |
 | Text primary | `--color-text-primary` / `colorText` | `rgba(0,0,0,.88)` | Body, labels, headings |
 | Text secondary | `--color-text-secondary` / `colorTextSecondary` | `rgba(0,0,0,.45)` | Captions and secondary metadata |
+| Text tertiary | `--color-text-tertiary` / `colorTextTertiary` | `rgba(0,0,0,.25)` | Icons, placeholders, disabled — never body text |
 | Table selected | `--color-table-row-selected` | `rgba(25,46,118,.08)` | Selected table rows and active tags |
 
+### Neutral ramp
+
+Single source for borders, dividers, and quiet fills — replaces scattered raw `rgba` in JSX.
+
+| Role | Token | Light | Usage |
+|------|-------|-------|-------|
+| Border | `--color-border` / `colorBorder` | `#E4E7ED` | Default component and divider borders |
+| Border secondary | `--color-border-secondary` / `colorBorderSecondary` | `#EEF0F4` | Subtle internal separators |
+| Fill hover | `--color-fill-hover` / `colorFillTertiary` | `rgba(0,0,0,.02)` | Quiet hover fills |
+| Fill active | `--color-fill-active` / `colorFillSecondary` | `rgba(0,0,0,.04)` | Pressed/active fills |
+
+### State vocabulary
+
+Softer than AntD defaults, tuned to the restrained internal tone. Each state carries three channels — `base` (foreground/dot), `bg` (tint fill), `border` (tint outline) — so status is **never** signalled by color alone (badges pair a dot with text).
+
+| State | Base | Bg | Border | AntD |
+|-------|------|----|--------|------|
+| Success | `--color-success` `#3B9E4E` | `--color-success-bg` `#F0F9EB` | `--color-success-border` `#D8EFCC` | `colorSuccess` |
+| Warning | `--color-warning` `#D98A0B` | `--color-warning-bg` `#FDF6EC` | `--color-warning-border` `#FAE7C8` | `colorWarning` |
+| Error | `--color-error` `#DC4A4A` | `--color-error-bg` `#FEF0F0` | `--color-error-border` `#FBDADA` | `colorError` |
+| Info | `--color-info` `#192E76` | `--color-info-bg` `rgba(25,46,118,.06)` | `--color-info-border` `rgba(25,46,118,.16)` | `colorInfo` (= brand) |
+
 ### Rules
-- JSX uses Tailwind color tokens such as `bg-laplace`, `text-laplace`, `bg-page`, and `text-text-secondary`.
+- JSX uses Tailwind color tokens such as `bg-primary`, `text-primary`, `bg-nav`, `bg-page`, `bg-success`, and `text-text-secondary`.
 - Ant Design component color, radius, and sizing changes go through `src/styles/theme.ts` component tokens.
-- Do not add raw color values in JSX. Extend `global.css` `@theme` or `theme.ts` only when a durable semantic role is missing.
+- Do not add raw color values in JSX. Extend `theme.ts` only when a durable semantic role is missing.
+
+### Token pipeline (single source of truth)
+Brand color truth lives **only** in `src/styles/theme.ts` (`primitiveTokens` → `semanticTokens` → `componentTokens`). Two consumers derive from it with zero duplication:
+- **AntD** reads the JS `antdTheme` object directly (`ConfigProvider`).
+- **Tailwind / raw CSS** read `var(--brand-*)`: `brandCssVars` in `theme.ts` is code-generated into `src/styles/brand-tokens.css` (`:root`) by `pnpm codegen` (`codegen:brand`), and `global.css` `@theme inline` maps each `--color-*` utility to its `var(--brand-*)`.
+- `src/styles/brand-tokens.css` is a generated artifact — **never hand-edit it**. To change a color, edit `theme.ts` and re-run `pnpm codegen`.
 
 ## 3. Typography
 
@@ -37,7 +66,12 @@ Janus is a restrained internal command center: dense, legible, and calm under re
 | Caption | 12px | 400-500 | 1.4 | Help text, compact metadata |
 
 ### Font Stack
-- Primary: `-apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif`
+- Primary: `"Inter Variable", "Inter", -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif`
+- Inter is self-hosted via `@fontsource-variable/inter` (imported in `main.tsx`) — offline/internal-safe, no CDN. It carries Latin + digits; CJK falls back to system fonts.
+- The stack is defined once in `theme.ts` `semanticTokens.fontFamily` (fed to both AntD `fontFamily` and `--brand-font-family`); `body` inherits it so non-AntD text matches too.
+
+### Tabular numerals
+- Table bodies enable `font-variant-numeric: tabular-nums` (`global.css` `@layer components`) so numbers, dates, and IDs align vertically across rows. Inter Variable supports `tnum` — a readability requirement for a data-dense back office.
 
 ### Rules
 - Product UI keeps a compact fixed scale. Do not introduce display typography into the authenticated shell.
@@ -71,6 +105,14 @@ All spacing derives from Tailwind's standard 4px scale. Use standard rungs such 
 - **Structure**: AntD Pro `PageContainer` wrapped by `src/components/PageContainer.tsx` with class `janus-page`.
 - **Spacing**: horizontal Pro inner padding is removed in `@layer components` so Content owns the page gutter.
 - **Depth**: white content surface on page gray with subtle token shadow.
+
+### Data table (flagship pattern)
+`features/users/components/UserTable.tsx` is the reference every feature table inherits from.
+- **Filter toolbar**: an always-visible bar (not AntD Pro's collapsed `search`) — debounced keyword + employee-no inputs, a status `Segmented` control, a live result count, and a reset that only enables when a filter is active. ProTable runs with `search={false}`; filter state is debounced (`useDebouncedValue`) into the `params` prop.
+- **Status column**: `UserStatusBadge` renders a colored dot **plus** text (dual-channel, never color-alone), with tone drawn from `USER_STATUS_META` (the single source mapping status → `labelKey` → tone).
+- **Empty state**: `UserTableEmpty` teaches the next step — distinguishes "no filter match" (offers clear-filters) from "no data yet", never a dead-end "no data".
+- **Bulk actions**: `rowSelection` with the native alert bar; bulk controls live in `tableAlertOptionRender`. Reserved-but-unbuilt actions (e.g. server-side export) render **disabled with a "coming soon" tooltip** rather than as silently-dead controls.
+- **Density**: `size="small"`, sticky header, tabular-nums body (see §3).
 
 ### TagsView
 - **Structure**: horizontally scrollable tab strip below the header.
