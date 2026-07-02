@@ -27,6 +27,7 @@ const common: Record<string, string> = {
   'common.enabled': 'Enabled',
   'common.disabled': 'Disabled',
   'common.empty': 'No data',
+  'common.totalCount': '{total} items',
   'common.loading': 'Loading…',
   'common.success': 'Success',
   'common.fail': 'Operation failed',

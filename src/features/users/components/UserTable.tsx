@@ -1,8 +1,11 @@
 /**
  * 用户列表表格 —— 旗舰参考范式（后续 feature 表格照此继承）。
  *
- * 组成：常驻筛选工具栏（UserFilterBar，防抖喂查询）+ ProTable（关闭内建 search，
- * 表体 tabular-nums 见 global.css）+ 状态徽章 + 教学空状态 + 批量选择操作条。
+ * 三区分治（见 DESIGN.md §8）：
+ *   1. 筛选卡片（UserFilterBar）—— 只管检索：搜索 + 工号 + 状态 + 重置，防抖喂查询。
+ *   2. 表格卡片头部操作栏 —— 只管写操作：新建（右）+ 批量删除/导出（左，随选择态浮现）。
+ *   3. ProTable —— 关闭内建 search/toolbar/alert，表体 tabular-nums 见 global.css；
+ *      状态徽章 + 教学空状态 + 受控行选择；计数回归分页器 showTotal。
  * offset/limit 适配走 proTableRequest；列随 t 重算以支持切语言。
  */
 import { PlusOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
@@ -45,8 +48,10 @@ export function UserTable() {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const [filters, setFilters] = useState<UserFilterState>(EMPTY_FILTER);
-  const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(false);
+  // 行选择受控：操作栏的批量删除/导出据此启停；preserveSelectedRowKeys 保跨页选择。
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+  const clearSelection = () => setSelectedRowKeys([]);
 
   // 抽屉/弹窗态：单组件双模式，record=null 即新建。
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -123,8 +128,9 @@ export function UserTable() {
     });
   };
 
-  /** 批量删除：确认后一次性软删所选，展示受影响/跳过计数。 */
-  const confirmBatchDelete = (ids: string[], onCleanSelected: () => void) => {
+  /** 批量删除：确认后一次性软删所选，展示受影响/跳过计数，成功后清空选择并重取。 */
+  const confirmBatchDelete = () => {
+    const ids = selectedRowKeys.map(String);
     modal.confirm({
       title: t('pages.user.batchDeleteConfirmTitle'),
       icon: <ExclamationCircleOutlined />,
@@ -135,7 +141,7 @@ export function UserTable() {
       onOk: async () => {
         const result = await batchDeleteMutation.mutateAsync(ids);
         message.success(t('pages.user.batchDeleteSuccess', { affected: result.affected }));
-        onCleanSelected();
+        clearSelection();
         void actionRef.current?.reload();
       },
     });
@@ -232,35 +238,62 @@ export function UserTable() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [t, can],
   );
+  const hasSelection = selectedRowKeys.length > 0;
+
   return (
     <div className="flex h-full min-h-0 flex-col gap-3">
-      {/* 筛选卡片 —— 独立白色浮层，与表格卡片以 gap 分隔，画布从缝隙透出（消除单卡内
-          横向色带的割裂感）。 */}
+      {/* 筛选卡片 —— 独立白色浮层，只承载检索（搜索/工号/状态/重置）。与表格卡片以 gap
+          分隔，画布从缝隙透出（消除单卡内横向色带的割裂感）。 */}
       <div className="shrink-0 rounded-lg bg-card-bg px-4 py-3 shadow-sm">
         <UserFilterBar
           value={filters}
           onChange={setFilters}
           onReset={handleReset}
           onSubmit={handleSubmit}
-          total={total}
           loading={loading}
-          actions={
-            <Access perm="system:user:add">
-              <Button type="primary" icon={<PlusOutlined />} onClick={openCreate}>
-                {t('common.create')}
-              </Button>
-            </Access>
-          }
         />
       </div>
 
-      {/* 表格卡片 —— 独立白色浮层，撑满剩余高度，自身即滚动容器；sticky 表头锚到此
-          div 而非 window（见 scrollRef），保住卡内滚动的双浮卡语义。表头无灰底（白 +
-          底边框 + 弱化列名），靠结构而非填色区分，彻底去掉内部色带。 */}
-      <div
-        ref={scrollRef}
-        className="min-h-0 flex-1 overflow-y-auto rounded-lg bg-card-bg shadow-sm"
-      >
+      {/* 表格卡片 —— 独立白色浮层，撑满剩余高度。内部两段：常驻操作栏（不滚）+ 滚动区
+          （ProTable，sticky 表头锚到 scrollRef 而非 window，保住卡内滚动的双浮卡语义）。 */}
+      <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-lg bg-card-bg shadow-sm">
+        {/* 操作栏 —— 只管写操作，与检索彻底分家。左区新建常驻，是本页主行动召唤、扫读起点；
+            右区批量操作随选择态浮现（ml-auto 右推，无选择时留白），浮现/消失不推挤主按钮。
+            底边框与表体分层。 */}
+        <div className="border-border-secondary flex shrink-0 items-center gap-3 border-b px-4 py-2.5">
+          <Access perm="system:user:add">
+            <Button type="primary" icon={<PlusOutlined />} onClick={openCreate}>
+              {t('common.create')}
+            </Button>
+          </Access>
+          {hasSelection ? (
+            <div className="ml-auto flex items-center gap-3">
+              <span className="text-text-secondary text-sm tabular-nums" aria-live="polite">
+                {t('pages.user.selectedCount', { count: selectedRowKeys.length })}
+              </span>
+              <Access perm="system:user:remove">
+                <Button
+                  size="small"
+                  danger
+                  loading={batchDeleteMutation.isPending}
+                  onClick={confirmBatchDelete}
+                >
+                  {t('pages.user.batchDelete')}
+                </Button>
+              </Access>
+              <Tooltip title={t('pages.user.exportComingSoon')}>
+                <Button size="small" disabled>
+                  {t('pages.user.exportSelected')}
+                </Button>
+              </Tooltip>
+              <Button size="small" type="link" onClick={clearSelection}>
+                {t('pages.user.clearSelection')}
+              </Button>
+            </div>
+          ) : null}
+        </div>
+
+        <div ref={scrollRef} className="min-h-0 flex-1 overflow-y-auto">
         <ProTable<User>
           actionRef={actionRef}
           rowKey="id"
@@ -279,35 +312,20 @@ export function UserTable() {
             // 大数据集直接跳档（便捷）；深翻页用快速跳页免逐页点。
             pageSizeOptions: [10, 20, 50, 100],
             showQuickJumper: true,
-            // 总数已由工具栏的实时计数承载，分页器不再重复展示，避免双份 total 噪音。
-            showTotal: undefined,
+            // 计数回归分页器标准位（右下）—— 与翻页控件同处，一眼知规模且不占检索栏。
+            // 用通用 common.totalCount（领域无关"共 N 条"）而非 pages.user.*，后续表格可直接继承。
+            showTotal: (total) => t('common.totalCount', { total }),
           }}
-          rowSelection={{ preserveSelectedRowKeys: true }}
+          rowSelection={{
+            preserveSelectedRowKeys: true,
+            selectedRowKeys,
+            onChange: setSelectedRowKeys,
+          }}
+          // 批量操作走卡片头部的常驻操作栏，关掉 ProTable 内建的选择提示条（避免双份）。
+          tableAlertRender={false}
           // 斑马纹按数据 index 打标（偶数行），而非 CSS nth-child —— scroll.x 会插入
           // 隐藏的 .ant-table-measure-row 作为首个 tr，令 nth-child 奇偶错位。index 免疫。
           rowClassName={(_, index) => (index % 2 === 1 ? 'janus-row-stripe' : '')}
-          tableAlertOptionRender={({ selectedRowKeys, onCleanSelected }) => (
-            <div className="flex items-center gap-3">
-              <Access perm="system:user:remove">
-                <Button
-                  size="small"
-                  danger
-                  loading={batchDeleteMutation.isPending}
-                  onClick={() => confirmBatchDelete(selectedRowKeys.map(String), onCleanSelected)}
-                >
-                  {t('pages.user.batchDelete')}
-                </Button>
-              </Access>
-              <Tooltip title={t('pages.user.exportComingSoon')}>
-                <Button size="small" disabled>
-                  {t('pages.user.exportSelected')}
-                </Button>
-              </Tooltip>
-              <Button size="small" type="link" onClick={onCleanSelected}>
-                {t('pages.user.clearSelection')}
-              </Button>
-            </div>
-          )}
           locale={{
             emptyText: <UserTableEmpty hasFilter={hasFilter} onReset={handleReset} />,
           }}
@@ -324,11 +342,11 @@ export function UserTable() {
                 }),
               params,
             );
-            setTotal(result.total);
             setLoading(false);
             return result;
           }}
         />
+        </div>
       </div>
 
       <UserFormDrawer

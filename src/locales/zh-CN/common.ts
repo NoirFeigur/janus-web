@@ -28,6 +28,7 @@ const common: Record<string, string> = {
   'common.enabled': '启用',
   'common.disabled': '禁用',
   'common.empty': '暂无数据',
+  'common.totalCount': '共 {total} 条',
   'common.loading': '加载中…',
   'common.success': '操作成功',
   'common.fail': '操作失败',
