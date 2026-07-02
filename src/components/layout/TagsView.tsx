@@ -145,7 +145,11 @@ export function TagsView({ menuTree }: TagsViewProps) {
         {visitedTabs.map((tab) => {
           const active = tab.path === pathname;
           return (
-            <Dropdown key={tab.path} trigger={['contextMenu']} menu={{ items: buildMenuItems(tab.path, tab.closable) }}>
+            <Dropdown
+              key={tab.path}
+              trigger={['contextMenu']}
+              menu={{ items: buildMenuItems(tab.path, tab.closable) }}
+            >
               <button
                 type="button"
                 className={[

@@ -11,7 +11,6 @@ import type { CurrentUserRead, TokenRead } from './auth.types';
 
 import { apiClient } from '@/lib/http/client';
 
-
 export async function login(username: string, password: string): Promise<TokenRead> {
   const res = await apiClient.post<TokenRead>('/auth/login', { username, password });
   return res.data;

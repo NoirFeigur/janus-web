@@ -28,9 +28,7 @@ const COMPONENT_REGISTRY: Record<string, LazyExoticComponent<ComponentType>> = {
 };
 
 /** 按后端 component 名取组件；未登记则回落占位页（不崩，方便渐进实现）。 */
-export function resolveComponent(
-  component: string | null,
-): LazyExoticComponent<ComponentType> {
+export function resolveComponent(component: string | null): LazyExoticComponent<ComponentType> {
   const hit = component ? COMPONENT_REGISTRY[component] : undefined;
   return hit ?? PlaceholderPage;
 }

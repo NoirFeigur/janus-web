@@ -40,18 +40,13 @@ function isErrorEnvelope(data: unknown): data is ErrorEnvelope {
     typeof data === 'object' &&
     data !== null &&
     'success' in data &&
-    (data).success === false &&
+    data.success === false &&
     'code' in data
   );
 }
 
 function isSuccessEnvelope(data: unknown): data is SuccessEnvelope<unknown> {
-  return (
-    typeof data === 'object' &&
-    data !== null &&
-    'success' in data &&
-    (data).success === true
-  );
+  return typeof data === 'object' && data !== null && 'success' in data && data.success === true;
 }
 
 // ---- 请求拦截 ----------------------------------------------------------------
@@ -74,11 +69,9 @@ async function runRefresh(): Promise<string | null> {
     return null;
   }
   try {
-    const res = await apiClient.post<TokenRead>(
-      '/auth/refresh',
-      { refresh_token: refreshToken },
-      { _isRefresh: true } as RetryableConfig,
-    );
+    const res = await apiClient.post<TokenRead>('/auth/refresh', { refresh_token: refreshToken }, {
+      _isRefresh: true,
+    } as RetryableConfig);
     const token = res.data;
     useAuthStore.getState().setTokens({
       accessToken: token.access_token,

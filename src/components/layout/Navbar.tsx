@@ -25,7 +25,13 @@ interface NavbarProps {
   onLogout: () => void;
 }
 
-export function Navbar({ siderCollapsed, isMobile, onNavigationToggle, menuTree, onLogout }: NavbarProps) {
+export function Navbar({
+  siderCollapsed,
+  isMobile,
+  onNavigationToggle,
+  menuTree,
+  onLogout,
+}: NavbarProps) {
   const t = useT();
   const user = useAuthStore((state) => state.user);
   const setLocale = useLocaleStore((state) => state.setLocale);
@@ -33,7 +39,13 @@ export function Navbar({ siderCollapsed, isMobile, onNavigationToggle, menuTree,
   const navigationLabel = isMobile
     ? t('common.nav.open')
     : t(siderCollapsed ? 'common.nav.expand' : 'common.nav.collapse');
-  const navigationIcon = isMobile ? <MenuOutlined /> : siderCollapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />;
+  const navigationIcon = isMobile ? (
+    <MenuOutlined />
+  ) : siderCollapsed ? (
+    <MenuUnfoldOutlined />
+  ) : (
+    <MenuFoldOutlined />
+  );
 
   return (
     <div className="flex h-full min-w-0 items-center justify-between bg-header-bg px-4">

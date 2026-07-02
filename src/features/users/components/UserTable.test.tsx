@@ -18,7 +18,6 @@ import { server } from '../../../../tests/msw/server';
 
 import { UserTable } from './UserTable';
 
-
 import { createAppIntl } from '@/lib/i18n';
 
 /**

@@ -8,10 +8,7 @@ import { resolveIcon } from './iconRegistry';
 type MenuItem = Required<MenuProps>['items'][number];
 type Translate = (id: string) => string;
 
-export function menuTreeToAntdItems(
-  tree: readonly MenuTreeNode[],
-  t: Translate,
-): MenuItem[] {
+export function menuTreeToAntdItems(tree: readonly MenuTreeNode[], t: Translate): MenuItem[] {
   return tree.flatMap((node) => {
     if (node.menu_type === 'button' || !node.path) {
       return [];

@@ -34,7 +34,11 @@ export function AppProviders({ children }: { children: ReactNode }) {
            * LightSelect 仍用 antd 5.25+ 已弃用的 dropdownRender/onDropdownVisibleChange 旧 prop 名，
            * 告警源自第三方库、非本项目代码，待 pro-components 跟进后可移除此项。
            */}
-          <ConfigProvider theme={antdTheme} locale={ANTD_LOCALES[locale]} warning={{ strict: false }}>
+          <ConfigProvider
+            theme={antdTheme}
+            locale={ANTD_LOCALES[locale]}
+            warning={{ strict: false }}
+          >
             <AntdApp>{children}</AntdApp>
           </ConfigProvider>
         </StyleProvider>

@@ -38,7 +38,12 @@ describe('auth mutations', () => {
       http.post('*/auth/login', () =>
         HttpResponse.json({
           success: true,
-          data: { access_token: 'acc-1', token_type: 'Bearer', expires_in: 900, refresh_token: 'ref-1' },
+          data: {
+            access_token: 'acc-1',
+            token_type: 'Bearer',
+            expires_in: 900,
+            refresh_token: 'ref-1',
+          },
           trace_id: 't',
         }),
       ),

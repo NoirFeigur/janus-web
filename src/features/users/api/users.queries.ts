@@ -71,8 +71,7 @@ export function useCreateUserMutation() {
 export function useUpdateUserMutation() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, payload }: { id: string; payload: UserUpdate }) =>
-      updateUser(id, payload),
+    mutationFn: ({ id, payload }: { id: string; payload: UserUpdate }) => updateUser(id, payload),
     onSuccess: (_data, { id }) => {
       void queryClient.invalidateQueries({ queryKey: userQueries.lists() });
       void queryClient.invalidateQueries({ queryKey: userQueries.detail(id) });

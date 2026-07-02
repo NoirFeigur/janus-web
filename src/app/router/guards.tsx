@@ -40,9 +40,7 @@ export function MenuAccessGuard({ children }: { children: ReactNode }) {
   const allowedPaths = useMemo(() => {
     if (!menus) return null;
     return new Set(
-      menus
-        .filter((m) => m.menu_type === 'menu' && m.path !== null)
-        .map((m) => m.path as string),
+      menus.filter((m) => m.menu_type === 'menu' && m.path !== null).map((m) => m.path as string),
     );
   }, [menus]);
 

@@ -46,11 +46,7 @@ export default function HomePage() {
       <Row gutter={[16, 16]}>
         {entries.map((entry) => (
           <Col key={entry.path} xs={12} sm={8} md={6}>
-            <Card
-              hoverable
-              onClick={() => void navigate(entry.path)}
-              className="text-center"
-            >
+            <Card hoverable onClick={() => void navigate(entry.path)} className="text-center">
               <div className="text-2xl">{resolveIcon(entry.icon)}</div>
               <div className="mt-2">{t(entry.name)}</div>
             </Card>

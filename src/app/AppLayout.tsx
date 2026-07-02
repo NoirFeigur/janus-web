@@ -82,7 +82,7 @@ export function AppLayout() {
   );
 
   const logo = (
-          <div className="janus-sider-logo flex h-12 items-center justify-center bg-nav px-4 text-white">
+    <div className="janus-sider-logo flex h-12 items-center justify-center bg-nav px-4 text-white">
       <span className="grid h-7 w-7 shrink-0 place-items-center rounded bg-white/10 text-sm font-semibold">
         J
       </span>

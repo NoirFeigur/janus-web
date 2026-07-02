@@ -12,7 +12,6 @@ import { server } from '../../../tests/msw/server';
 
 import { apiClient } from './interceptors';
 
-
 import { ApiError } from '@/types/api';
 
 describe('api interceptors', () => {
@@ -124,7 +123,12 @@ describe('api interceptors', () => {
       http.post('*/auth/refresh', () =>
         HttpResponse.json({
           success: true,
-          data: { access_token: 'new-token', token_type: 'Bearer', expires_in: 900, refresh_token: 'r2' },
+          data: {
+            access_token: 'new-token',
+            token_type: 'Bearer',
+            expires_in: 900,
+            refresh_token: 'r2',
+          },
           trace_id: 't',
         }),
       ),

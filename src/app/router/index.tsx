@@ -2,7 +2,6 @@
 import { Suspense, type ComponentType } from 'react';
 import { createBrowserRouter } from 'react-router-dom';
 
-
 import { resolveComponent } from './componentRegistry';
 import { AuthGuard, MenuAccessGuard } from './guards';
 import { paths } from './paths';

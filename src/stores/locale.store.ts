@@ -3,7 +3,6 @@ import { type AppLocale, DEFAULT_LOCALE } from '@lib/i18n';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-
 interface LocaleState {
   locale: AppLocale;
   setLocale: (locale: AppLocale) => void;

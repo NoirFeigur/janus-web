@@ -1,0 +1,9 @@
+# codegen 产物 —— 由工具生成，禁 Prettier 二次改写（否则 codegen 后又漂移，纯 churn）
+src/lib/openapi/types.ts
+src/locales/*/enum.ts
+
+# 构建产物
+dist/
+coverage/
+node_modules/
+pnpm-lock.yaml

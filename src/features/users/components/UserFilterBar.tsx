@@ -33,7 +33,14 @@ interface UserFilterBarProps {
   actions?: ReactNode;
 }
 
-export function UserFilterBar({ value, onChange, onReset, total, loading, actions }: UserFilterBarProps) {
+export function UserFilterBar({
+  value,
+  onChange,
+  onReset,
+  total,
+  loading,
+  actions,
+}: UserFilterBarProps) {
   const t = useT();
   const hasFilter = value.keyword !== '' || value.employeeNo !== '' || value.status !== undefined;
 
@@ -73,9 +80,7 @@ export function UserFilterBar({ value, onChange, onReset, total, loading, action
       )}
 
       <div className="ml-auto flex items-center gap-3">
-        <span className="text-sm text-text-tertiary">
-          {t('pages.user.totalCount', { total })}
-        </span>
+        <span className="text-sm text-text-tertiary">{t('pages.user.totalCount', { total })}</span>
         {actions}
       </div>
     </div>

@@ -26,7 +26,11 @@ interface UserResetPasswordModalProps {
   onOpenChange: (open: boolean) => void;
 }
 
-export function UserResetPasswordModal({ open, record, onOpenChange }: UserResetPasswordModalProps) {
+export function UserResetPasswordModal({
+  open,
+  record,
+  onOpenChange,
+}: UserResetPasswordModalProps) {
   const t = useT();
   const { message } = App.useApp();
   const resetMutation = useResetUserPasswordMutation();

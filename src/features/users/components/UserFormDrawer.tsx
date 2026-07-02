@@ -8,7 +8,12 @@
  * 成功后由父级 onSuccess 触发列表失效重取；成功 toast 在此按语境给。
  */
 import { CloseOutlined } from '@ant-design/icons';
-import { DrawerForm, ProFormSelect, ProFormText, ProFormTextArea } from '@ant-design/pro-components';
+import {
+  DrawerForm,
+  ProFormSelect,
+  ProFormText,
+  ProFormTextArea,
+} from '@ant-design/pro-components';
 import { useQuery } from '@tanstack/react-query';
 import { App, Button, Form } from 'antd';
 import { useEffect } from 'react';
@@ -211,15 +216,15 @@ export function UserFormDrawer({
       <ProFormText.Password
         name="password"
         label={t('common.password')}
-        rules={
-          isEdit ? [] : [{ min: 8, message: t('pages.user.passwordMin') }]
-        }
-        placeholder={
-          isEdit ? t('pages.user.passwordEditHint') : t('pages.user.passwordCreateHint')
-        }
+        rules={isEdit ? [] : [{ min: 8, message: t('pages.user.passwordMin') }]}
+        placeholder={isEdit ? t('pages.user.passwordEditHint') : t('pages.user.passwordCreateHint')}
         fieldProps={{ autoComplete: 'new-password' }}
       />
-      <ProFormText name="real_name" label={t('pages.user.realName')} fieldProps={{ maxLength: 64 }} />
+      <ProFormText
+        name="real_name"
+        label={t('pages.user.realName')}
+        fieldProps={{ maxLength: 64 }}
+      />
       <ProFormText
         name="email"
         label={t('pages.user.email')}
@@ -231,7 +236,12 @@ export function UserFormDrawer({
         name="department_id"
         label={t('pages.user.department')}
         options={departmentOptions.data ?? []}
-        fieldProps={{ loading: departmentOptions.isLoading, allowClear: true, showSearch: true, optionFilterProp: 'label' }}
+        fieldProps={{
+          loading: departmentOptions.isLoading,
+          allowClear: true,
+          showSearch: true,
+          optionFilterProp: 'label',
+        }}
       />
       <ProFormSelect
         name="role_ids"

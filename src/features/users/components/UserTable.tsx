@@ -5,10 +5,7 @@
  * 表体 tabular-nums 见 global.css）+ 状态徽章 + 教学空状态 + 批量选择操作条。
  * offset/limit 适配走 proTableRequest；列随 t 重算以支持切语言。
  */
-import {
-  PlusOutlined,
-  ExclamationCircleOutlined,
-} from '@ant-design/icons';
+import { PlusOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import { ProTable, type ActionType, type ProColumns } from '@ant-design/pro-components';
 import { App, Button, Space, Tooltip } from 'antd';
 import { useMemo, useRef, useState } from 'react';
@@ -125,9 +122,7 @@ export function UserTable() {
       cancelText: t('common.cancel'),
       onOk: async () => {
         const result = await batchDeleteMutation.mutateAsync(ids);
-        message.success(
-          t('pages.user.batchDeleteSuccess', { affected: result.affected }),
-        );
+        message.success(t('pages.user.batchDeleteSuccess', { affected: result.affected }));
         onCleanSelected();
         void actionRef.current?.reload();
       },
@@ -202,9 +197,7 @@ export function UserTable() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [t],
   );
-
-  // @ts-ignore
-    return (
+  return (
     <div className="flex h-full min-h-0 flex-col rounded-lg bg-card-bg shadow-sm">
       {/* 统一顶栏：筛选 + 操作，一行搞定 */}
       <div className="shrink-0 border-b border-border-secondary px-4 py-3">
@@ -250,9 +243,7 @@ export function UserTable() {
                   size="small"
                   danger
                   loading={batchDeleteMutation.isPending}
-                  onClick={() =>
-                    confirmBatchDelete(selectedRowKeys.map(String), onCleanSelected)
-                  }
+                  onClick={() => confirmBatchDelete(selectedRowKeys.map(String), onCleanSelected)}
                 >
                   {t('pages.user.batchDelete')}
                 </Button>

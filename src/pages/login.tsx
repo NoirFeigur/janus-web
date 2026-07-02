@@ -27,9 +27,7 @@ interface FromState {
 }
 
 /** 开发期预填，方便本地调试；生产构建（import.meta.env.DEV=false）下为空，绝不硬编码凭据进包。 */
-const DEV_DEFAULTS = import.meta.env.DEV
-  ? { username: 'admin', password: '123456' }
-  : {};
+const DEV_DEFAULTS = import.meta.env.DEV ? { username: 'admin', password: '123456' } : {};
 
 /** 门户 motif —— 同心弧 + 节点点阵，navy 深浅分层，缓旋。纯装饰，aria-hidden。 */
 function PortalMotif() {
@@ -54,8 +52,18 @@ function PortalMotif() {
         <circle cx="200" cy="200" r="88" stroke="currentColor" strokeWidth="1" opacity="0.36" />
       </g>
       {/* 中心门户开口：两道相对的弧，喻「双面门神」通道。 */}
-      <path d="M200 108 A92 92 0 0 1 200 292" stroke="currentColor" strokeWidth="2.5" opacity="0.72" />
-      <path d="M200 292 A92 92 0 0 1 200 108" stroke="currentColor" strokeWidth="2.5" opacity="0.32" />
+      <path
+        d="M200 108 A92 92 0 0 1 200 292"
+        stroke="currentColor"
+        strokeWidth="2.5"
+        opacity="0.72"
+      />
+      <path
+        d="M200 292 A92 92 0 0 1 200 108"
+        stroke="currentColor"
+        strokeWidth="2.5"
+        opacity="0.32"
+      />
       <circle cx="200" cy="200" r="6" fill="currentColor" opacity="0.78" />
       {/* 节点点阵 —— 网关的「连接」意象。 */}
       <g fill="currentColor" opacity="0.52">
@@ -95,9 +103,7 @@ export default function LoginPage() {
           <span className="grid h-9 w-9 place-items-center rounded-md bg-white/10 text-lg font-semibold">
             J
           </span>
-          <span className="text-lg font-semibold tracking-tight">
-            {t('common.appName')}
-          </span>
+          <span className="text-lg font-semibold tracking-tight">{t('common.appName')}</span>
         </div>
 
         {/* 门户 motif 居中铺陈。 */}

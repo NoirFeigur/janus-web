@@ -4,7 +4,6 @@ import type { BatchResult, User, UserCreate, UserUpdate } from './users.types';
 import { apiClient } from '@/lib/http/interceptors';
 import type { Page } from '@/types/api';
 
-
 export interface ListUsersParams {
   limit: number;
   offset: number;

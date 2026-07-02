@@ -35,9 +35,11 @@ const pageUser: Record<string, string> = {
   'pages.user.deleteSuccess': 'User deleted',
   // Delete confirmation
   'pages.user.deleteConfirmTitle': 'Delete this user?',
-  'pages.user.deleteConfirmContent': 'This will delete user "{name}". This action cannot be undone.',
+  'pages.user.deleteConfirmContent':
+    'This will delete user "{name}". This action cannot be undone.',
   'pages.user.batchDeleteConfirmTitle': 'Delete selected users?',
-  'pages.user.batchDeleteConfirmContent': 'This will delete {count} selected users. This action cannot be undone.',
+  'pages.user.batchDeleteConfirmContent':
+    'This will delete {count} selected users. This action cannot be undone.',
   'pages.user.batchDeleteSuccess': '{affected} users deleted',
   // Reset password modal
   'pages.user.resetPasswordTitle': 'Reset password for "{name}"',
